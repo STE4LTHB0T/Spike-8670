@@ -29,4 +29,3 @@ wincertstore==0.2
 yarl==1.6.3
 youtube-dl==2021.6.6
 zipp==3.4.1
-
