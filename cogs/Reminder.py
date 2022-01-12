@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 
-cluster = MongoClient("mongodb+srv://spike:sentientbot@spike.yqn3s.mongodb.net/<dbname>?retryWrites=true&w=majority")
+cluster = MongoClient(os.environ['MONGO'])
 
 reminder = cluster["discord"]["reminder"]  
 

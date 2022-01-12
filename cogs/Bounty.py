@@ -1,11 +1,12 @@
-import discord,typing, random
+import discord,typing, random, os
 from discord.ext import commands
 from pymongo import MongoClient
 
 level = ["Shinobi", "Aku", "Avengers", "Espada", "Super Saiyajin", "Kaizoku"]
 levelnum = [2,10,15,25,35,50]
 
-cluster = MongoClient("mongodb+srv://spike:sentientbot@spike.yqn3s.mongodb.net/<dbname>?retryWrites=true&w=majority")
+cluster = MongoClient(os.environ['MONGO'])
+
 
 ranking = cluster["discord"]["bounty"]
 spam_channels = [461661510520012800,435765743766863882,478568350080040970,479645984658292737,546632755476300045,775031354374225930,785081153949663242,479139129230360576,791954505678979072,773266465678950520,792260571130626058,802877502661197874]

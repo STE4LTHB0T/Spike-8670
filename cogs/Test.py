@@ -1,8 +1,8 @@
-import discord, random
+import discord, random, os
 from discord.ext import commands
 from pymongo import MongoClient
 
-cluster = MongoClient("mongodb+srv://spike:sentientbot@spike.yqn3s.mongodb.net/<dbname>?retryWrites=true&w=majority")
+cluster = MongoClient(os.environ['MONGO'])
 
 giveaway = cluster["discord"]["giveaway"]
 

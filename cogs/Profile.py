@@ -3,7 +3,7 @@ from resources.Lists import *
 from discord.ext import commands, tasks
 from pymongo import MongoClient
 
-cluster = MongoClient("mongodb+srv://spike:sentientbot@spike.yqn3s.mongodb.net/<dbname>?retryWrites=true&w=majority")
+cluster = MongoClient(os.environ['MONGO'])
 profile = cluster["discord"]["profiles"]
 
 

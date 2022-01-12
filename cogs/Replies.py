@@ -1,4 +1,4 @@
-import discord, time, datetime, asyncio, random, giphy_client
+import discord, time, datetime, asyncio, random, giphy_client, os
 from datetime import datetime
 from discord.ext import commands
 from googlesearch import search
@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from resources.Lists import *
 from giphy_client.rest import ApiException 
 
-cluster = MongoClient("mongodb+srv://spike:sentientbot@spike.yqn3s.mongodb.net/<dbname>?retryWrites=true&w=majority")
+cluster = MongoClient(os.environ['MONGO'])
 
 ranking = cluster["discord"]["bounty"]
 
