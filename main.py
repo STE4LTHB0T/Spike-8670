@@ -3,7 +3,6 @@ from instaloader import Instaloader, Profile
 from discord.ext import commands,tasks
 from discord import Intents, Embed
 from resources.Lists import *
-from keep_alive import keep_alive
 
 
 client = commands.Bot(case_insensitive=True, command_prefix=['spike ', 'Spike '], intents=discord.Intents.all())
@@ -141,8 +140,6 @@ async def followers():
 
 followers.start()
 
-
-keep_alive()
 
 
 client.run(os.getenv('TOKEN'))
