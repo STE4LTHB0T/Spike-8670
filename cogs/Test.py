@@ -63,20 +63,7 @@ class Test(commands.Cog):
         if message.channel.id == 495020983267229706:
             await message.publish()
 
-    @commands.command()
-    async def dm(self, ctx, user_id=None, *, args=None):
-        if user_id != None and args != None:
-            try:
-                target = await self.client.fetch_user(user_id)
-                await ctx.message.delete()
-                await target.send(args)
-                await ctx.send("Delivered!", delete_after=2)
 
-            except:
-                await ctx.channel.send("Adhellam pannah mudiyadhu!")
-
-        else:
-            await ctx.channel.send("Aaley illa, bell'u!")
 
 
 
