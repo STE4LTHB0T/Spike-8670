@@ -37,18 +37,23 @@ class Profile(commands.Cog):
     if member is None:
       member = ctx.author
     tag=profile.find({"id":member.id})
-    i=1
-    eprofile=discord.Embed(title="Profile",description=f"Profile Database of {member.mention}",color=discord.Color.red())
-    for x in tag:
-      try:
-        temp=x["client"]
-        tempname=x["username"]
-        eprofile.add_field(name=f"{i}: {temp}", value=f"{tempname}",inline=False)
-        i+=1
-      except:
-        pass
-    eprofile.set_thumbnail(url=member.avatar_url)
-    await ctx.reply(embed=eprofile)
+    results= list(tag)
+    if len(results)==0:
+      pathetic=discord.Embed(description="No profile found!")
+      await ctx.channel.send(embed=pathetic)      
+    else:
+      i=1
+      eprofile=discord.Embed(title="Profile",description=f"Profile Database of {member.mention}",color=discord.Color.red())
+      for x in tag:
+        try:
+          temp=x["client"]
+          tempname=x["username"]
+          eprofile.add_field(name=f"{i}: {temp}", value=f"{tempname}",inline=False)
+          i+=1
+        except:
+          pass
+      eprofile.set_thumbnail(url=member.avatar_url)
+      await ctx.reply(embed=eprofile)
 
 def setup(client):
   client.add_cog(Profile(client))

@@ -39,8 +39,10 @@ class Warnings(commands.Cog):
           return await ctx.send("https://tenor.com/view/edward-cowboy-bebop-web-jamming-gif-14503901")
 
         warns= warnings.find({"memid":member.id})
-        if warns is None:
-          await ctx.reply("No cases found!")
+        results=list(warns) 
+        if len(results)==0:
+          pathetic=discord.Embed(description="No cases registered!")
+          await ctx.channel.send(embed=pathetic)
         else:
           i=1
           try:
