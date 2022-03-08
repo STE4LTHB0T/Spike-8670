@@ -29,7 +29,7 @@ class DM(commands.Cog):
                   except:
                       continue
           pastDate = open("./resources/pastDate.txt","w")
-          pastDate.write(datetime.now())
+          pastDate.write(f"{datetime.now()}")
           pastDate.close()
       time.sleep(43200)
 
