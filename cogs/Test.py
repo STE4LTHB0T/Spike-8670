@@ -64,17 +64,6 @@ class Test(commands.Cog):
             await message.publish()
 
     @commands.command()
-    async def pm(self, ctx, member: discord.Member = None, *, message=None):
-        if member is None:
-            await ctx.send("Aaley illa, bell'u!")
-        if message is None:
-            await ctx.send("Adhula onnum ila, keela potturu!")
-        user = self.client.get_user(member)
-        await user.send(message)
-
-
-
-    @commands.command()
     async def dm(self, ctx, user_id=None, *, args=None):
         if user_id != None and args != None:
             try:
@@ -85,7 +74,6 @@ class Test(commands.Cog):
 
             except:
                 await ctx.channel.send("Adhellam pannah mudiyadhu!")
-
 
         else:
             await ctx.channel.send("Aaley illa, bell'u!")
