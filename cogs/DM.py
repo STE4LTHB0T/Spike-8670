@@ -30,6 +30,7 @@ class DM(commands.Cog):
                       continue
           pastDate = open("./resources/pastDate.txt","w")
           pastDate.write(datetime.now())
+          pastDate.close()
       time.sleep(43200)
 
         
