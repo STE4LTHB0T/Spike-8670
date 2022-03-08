@@ -1,6 +1,5 @@
 import discord, time
 from datetime import datetime
-from dotenv import load_dotenv
 from discord.ext import commands
 
 class DM(commands.Cog):
