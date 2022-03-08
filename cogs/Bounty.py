@@ -31,7 +31,7 @@ class Bounty(commands.Cog):
 	@commands.check(is_it_ON)
 	async def on_message(self,message):
 		number = random.randint(0, 10000)
-		stats = ranking.find_one({"id":message.author.id})
+		stats = ranking.find_one({"id":message.author.id, "guild.id":message.guild.id})
 		if not message.author.bot:
 			if not message.guild:
 				return
@@ -41,7 +41,7 @@ class Bounty(commands.Cog):
 				ratelimit = self.get_ratelimit(message)
 			if ratelimit is None:
 				if stats is None:
-					newuser = {"_id":number,"name":message.author.name,"id":message.author.id, "xp": 0, "guild id":message.author.guild.id, "guild name":message.author.guild.name}
+					newuser = {"name":message.author.name,"id":message.author.id, "xp": 0, "guild id":message.author.guild.id, "guild name":message.author.guild.name}
 					ranking.insert_one(newuser)
 				else:
 					xp=stats["xp"]+10
@@ -67,6 +67,7 @@ class Bounty(commands.Cog):
 		if member is None:
 			member=ctx.author
 		stats=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+		print(stats)
 		if stats is None:
 			pathetic=discord.Embed(description="You have no bounty!")
 			await ctx.channel.send(embed=pathetic)
