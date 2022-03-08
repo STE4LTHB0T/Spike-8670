@@ -19,7 +19,7 @@ class Help(commands.Cog):
     helper.add_field(name="Moderation",value="`setup`, `ban`, `caseregister`, `cases`, `clear`, `deletecase`, `kick`, `mute`, `nickname`, `tempmute`",inline=False)
     helper.add_field(name="Music and Radio",value="`music`, `radio`",inline=False)
     helper.add_field(name="General Commands",value="`echo`, `google`, `invite`, `ping`, `poll`, `remind`",inline=False)
-    helper.add_field(name="User-related Commands",value="`id`, `profiles`, `records`, `wanted`",inline=False)
+    helper.add_field(name="User-related Commands",value="`id`, `profiles`, `records`, `trade`, `wanted`",inline=False)
     helper.add_field(name="Roleplay Commands",value="`arrest`",inline=False)
     await ctx.reply(embed=helper)
   
@@ -189,6 +189,12 @@ class Help(commands.Cog):
       arrest = discord.Embed(title="Help - Arrest",description="`spike arrest [@User]` arrests the Citizen for all their bounties /jk",color=discord.Color.red())
       arrest.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=arrest)
+
+  @help.command(aliases=["trade!"])
+  async def trade(self, ctx):
+      trade = discord.Embed(title="Help - Trade",description="`spike trade [@User] [Woolongs]` transfers the Bounty XP as Woolongs for the any trade in the Solar System.",color=discord.Color.red())
+      trade.set_thumbnail(url=self.client.user.avatar_url)
+      await ctx.reply(embed=trade)
 
 def setup(client):
 	client.add_cog(Help(client))
