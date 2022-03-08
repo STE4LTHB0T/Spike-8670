@@ -19,7 +19,7 @@ class DM(commands.Cog):
   @commands.Cog.listener()
   async def beactive(self):
       guild=414057277050585088
-      pastDate = 0
+      pastDate = open("./resources/pastDate.txt","w")
       check_role = get(guild.message.server.roles, name='Shinobi')
       if (datetime.now() - pastDate).days>1:       
           for member in guild.members:
@@ -28,7 +28,7 @@ class DM(commands.Cog):
                       await member.send("Hey! This is Spike from Otaku Nadu OwO. I know this is kinda awkward but man you really should talk there!\nI ain't leaving you alone until you atleast have a role or something.")
                   except:
                       continue
-          pastDate = datetime.now()
+          pastDate.write(datetime.now())
       time.sleep(43200)
 
         
