@@ -3,7 +3,9 @@ from instaloader import Instaloader, Profile
 from discord.ext import commands,tasks
 from discord import Intents, Embed
 from resources.Lists import *
-
+from dotenv import load_dotenv
+load_dotenv('/home/thevigilante/Spike-8670/*.env')
+  
 
 client = commands.Bot(case_insensitive=True, command_prefix=['spike ', 'Spike '], intents=discord.Intents.all())
 client.remove_command('help')
@@ -139,7 +141,6 @@ async def followers():
 
 
 followers.start()
-
 
 
 client.run(os.getenv('TOKEN'))

@@ -63,7 +63,6 @@ class Bounty(commands.Cog):
 									await message.channel.send(embed=bounty_level)
                   
 	@commands.command()
-	@commands.check(is_it_ON)
 	async def bounty(self,ctx,member:discord.Member=None):
 		if member is None:
 			member=ctx.author
@@ -91,29 +90,32 @@ class Bounty(commands.Cog):
 			bounty.add_field(name="Bounty XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
 			bounty.add_field(name="Bounty Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
 			bounty.add_field(name="Bounty Level", value=f"{lvl}", inline = True)
-			bounty.add_field(name="Bounty Level Priority", value=member.top_role.mention, inline = True)
-			bounty.add_field(name="Bounty Level Progress", value=mark* ":x:" + (5-mark)*":heavy_multiplication_x:", inline=False)
+			if member.guild.id ==  414057277050585088:
+				bounty.add_field(name="Bounty Level Priority", value=member.top_role.mention, inline = True)
+			else:
+				pass
+			bounty.add_field(name="Bounty Level Progress", value=mark* ":x:" + (5-mark)*":heavy_multiplication_x:", inline=True)
 			bounty.set_thumbnail(url=member.avatar_url)
 			await ctx.reply(embed=bounty)
 			      			
 	@commands.command(aliases=["top bounties", "top"])
 	@commands.check(is_it_ON)
 	async def board(self,ctx):
-    		rankings = ranking.find().sort("xp",-1)
-    		i = 1
-    		board = discord.Embed(title="Otaku Nadu Leaderboard",color=discord.Color.red())
-    		for x in rankings:
-      			try:
-        			temp=ctx.guild.get_member(x["id"])
-        			tempxp= x["xp"]
-        			board.add_field(name=f"{i}: {temp.name}", value=f"Bounty XP: {tempxp}", inline= False)
-        			i+=1
-      			except:
-        			pass
-      			if i==11:
-        			break
-    		board.set_thumbnail(url=ctx.guild.icon_url)
-    		await ctx.reply(embed=board)
+			rankings = ranking.find().sort("xp",-1)
+			i = 1
+			board = discord.Embed(title="Otaku Nadu Leaderboard",color=discord.Color.red())
+			for x in rankings:
+				try:
+					temp=ctx.guild.get_member(x["id"])
+					tempxp= x["xp"]
+					board.add_field(name=f"{i}: {temp.name}", value=f"Bounty XP: {tempxp}", inline= False)
+					i+=1
+				except:
+					pass
+				if i==11:
+					break
+			board.set_thumbnail(url=ctx.guild.icon_url)
+			await ctx.reply(embed=board)
 		
 		
 def setup(client):
