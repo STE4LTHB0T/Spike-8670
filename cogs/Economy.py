@@ -18,10 +18,10 @@ class Economy(commands.Cog):
     async def trade(self,ctx,member:discord.Member,woolong:int):
         async with ctx.typing():
             await asyncio.sleep(0.5)
-        message=await ctx.reply("Beginning Bounty Transaction!")
+        message=await ctx.send("Beginning Bounty Transaction!")
         async with ctx.typing():
             await asyncio.sleep(0.5)        
-        await message.edit(f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
+        await message.edit(content=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
         sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
         send=sender["xp"]-woolong
@@ -30,7 +30,7 @@ class Economy(commands.Cog):
         reciever=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"xp":recieve}})
         async with ctx.typing():
             await asyncio.sleep(0.5)
-        await message.edit("Bounty Transaction successful!")
+        await message.edit(content="Bounty Transaction successful!")
 
 def setup(client):
   client.add_cog(Economy(client))
