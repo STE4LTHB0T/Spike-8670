@@ -1,6 +1,7 @@
 import discord, random
 from discord.ext import commands
 from discord import FFmpegPCMAudio
+from resources.Lists import *
 
 class Radio(commands.Cog):
 
@@ -19,17 +20,6 @@ class Radio(commands.Cog):
       player = await channel.connect()
     except:
       pass
-    radio=["https://listen.moe/stream", 
-  
-    "http://curiosity.shoutca.st:6110/",
-
-    "http://animefm.stream.laut.fm/animefm?t302=2021-04-21_07-22-21&uuid=142de8f2-705d-4cde-9584-f8b20f7a460b",
-
-    "http://node-17.zeno.fm/ddetxwuhkpeuv?rj-ttl=5&rj-tok=AAABePLQ_Y4AuNQxaMySAOZYjQ",
-
-    "http://91.232.4.33:7028/",
-
-    "http://listen.ur-radio.de/anime.mp3"]
     player.play(FFmpegPCMAudio(random.choice(radio)))
 
   @commands.command()

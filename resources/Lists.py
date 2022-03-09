@@ -162,8 +162,68 @@ welcome_reply=['https://media.giphy.com/media/4ilFRqgbzbx4c/giphy.gif',
     'https://64.media.tumblr.com/fa342ffd75109ffc24ad4fa412bfc508/tumblr_nihmtrslbW1s8diwoo2_500.gifv',
 
     'https://c.tenor.com/bOmhwto1JpIAAAAd/faye-valentine.gif',
+    
     'https://64.media.tumblr.com/041e44733f1d9df56eabb51fac5f6845/tumblr_milkvtQZQx1r72ht7o1_500.gifv',
-    'https://i.imgur.com/VBzhxCF.gif'
+    
+    'https://i.imgur.com/VBzhxCF.gif']
+
+arrest_reply=["https://media.giphy.com/media/LowuSEmgBGEso/giphy.gif",
+      
+    "https://media.giphy.com/media/p7QJSVvU4bMWc/giphy.gif",
+    
+    "https://media.giphy.com/media/cjvFRb8DyAk0g/giphy.gif",
+    
+    "https://media.giphy.com/media/MCpVd5NJhNXJRkXV60/giphy.gif",
+    
+    "https://media.giphy.com/media/NQ43L8yLRg3iE/giphy.gif",
+    
+    "https://media.giphy.com/media/12mQQxo2lHcyhG/giphy.gif",
+    
+    "https://media.giphy.com/media/ovrcwymJaF9f2/giphy.gif",
+    
+    "https://media.giphy.com/media/v87ycxiegXFF6/giphy.gif",
+    
+    "https://media.giphy.com/media/10ZuedtImbopos/giphy.gif",
+    
+    "https://media.giphy.com/media/gQbVzXQQbGO7C/giphy.gif",
+    
+    "https://media.giphy.com/media/gQbVzXQQbGO7C/giphy.gif",
+    
+    "https://media.giphy.com/media/b1dXky39p5Zcs/giphy.gif",
+    
+    "https://media.giphy.com/media/14kYBP3sOq3ubm/giphy.gif",
+    
+    "https://media.giphy.com/media/irWbG2YwTDXR6/giphy.gif",
+    
+    "https://media.giphy.com/media/eR7OEDQDyA7Cg/giphy.gif",
+    
+    "https://media.giphy.com/media/KmG26GNmdWOUE/giphy.gif",
+    
+    "https://media.giphy.com/media/NNmJyVWriRDlS/giphy.gif"]
 
 
-    ]
+mentions_reply=["<:reeeshoot:477838636054872064>yare yare daze",
+
+    "Stop tagging me and do some productive work!<:FeelsGunMan:915265532540882994>",
+    
+    "Stop tagging me!<:reeeshoot:477838636054872064>",
+    
+    "I am busy unlike you tagging a bot<:hentaistonk:915267172769603675>",
+    
+    "It seems that a lifeless person is tagging me. Get a life dude!<:FeelsLMAOMan:477783011094560778>", 
+
+    "If you want help, do **spike help** dont't tag me<:pleb:477838638433173524>",
+    
+    "https://tenor.com/view/franklin-lamar-lamar-roasts-franklin-gif-19948223"]
+
+radio=["https://listen.moe/stream", 
+  
+    "http://curiosity.shoutca.st:6110/",
+
+    "http://animefm.stream.laut.fm/animefm?t302=2021-04-21_07-22-21&uuid=142de8f2-705d-4cde-9584-f8b20f7a460b",
+
+    "http://node-17.zeno.fm/ddetxwuhkpeuv?rj-ttl=5&rj-tok=AAABePLQ_Y4AuNQxaMySAOZYjQ",
+
+    "http://91.232.4.33:7028/",
+
+    "http://listen.ur-radio.de/anime.mp3"]

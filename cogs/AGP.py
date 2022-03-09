@@ -42,9 +42,12 @@ class AGP(commands.Cog):
         embed.add_field(name=field, value=fields[field])
     embed.set_footer(text=f"Detected At: {datetime.datetime.now().astimezone(timezone('Asia/Kolkata')).strftime('%d/%m/%Y %H:%M:%S IST')}")
     embed.set_thumbnail(url=message.author.avatar_url)
-    guild = message.guild
-    log_channel = discord.utils.get(guild.text_channels, name="ghost-ping")
-    await log_channel.send(embed=embed)
+    try:
+      guild = message.guild
+      log_channel = discord.utils.get(guild.text_channels, name="ghost-ping")
+      await log_channel.send(embed=embed)
+    except:
+      pass
     return True
       
 def setup(client):

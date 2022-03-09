@@ -90,7 +90,7 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: discord.Member = None, *, reason=None):
         if member is None:
             return await ctx.reply(
-                "Time to yeet somebody!<:evilpepe:477783012428349441>")
+                "Time to yeet somebody!<:FeelsEvilMan:477783012428349441>")
         if member is ctx.author:
             return await ctx.reply("You can't kick yourself!")
         guild = ctx.guild
@@ -108,13 +108,16 @@ class Moderation(commands.Cog):
         kick.add_field(name="Reason", value=f"{reason}", inline=True)
         kick.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=kick)
-        await log_channel.send(embed=kick)
+        try:
+            await log_channel.send(embed=kick)
+        except:
+            pass
 
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, MissingPermissions):
             await ctx.reply(
-                'Ever heard of admin powers?<:PepoThink:477783009651851284>')
+                'Ever heard of admin powers?<:FeelsThinkMan:477783009651851284>')
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
@@ -140,7 +143,10 @@ class Moderation(commands.Cog):
         ban.add_field(name="Reason", value=f"{reason}", inline=True)
         ban.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=ban)
-        await log_channel.send(embed=ban)
+        try:
+            await log_channel.send(embed=ban)
+        except:
+            pass
 
     @ban.error
     async def ban_error(self, ctx, error):
@@ -184,7 +190,7 @@ class Moderation(commands.Cog):
     async def mute(self, ctx, member: discord.Member = None, *, reason=None):
         if member is None:
             await ctx.reply(
-                "Time to mute somebody!<:MingoPepe:502444849442586644>")
+                "Time to mute somebody!<:FeelsSmugMan:477783012172365864>")
             await ctx.send(
                 "https://tenor.com/view/boom-youre-all-muted-south-park-pandemic-special-s24e1-s24e2-gif-19438992"
             )
@@ -202,7 +208,10 @@ class Moderation(commands.Cog):
         mute.add_field(name="Reason", value=f'{reason}', inline=True)
         mute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=mute)
-        await log_channel.send(embed=mute)
+        try:
+            await log_channel.send(embed=mute)
+        except:
+            pass
 
     @mute.error
     async def mute_error(self, ctx, error):
@@ -227,7 +236,10 @@ class Moderation(commands.Cog):
         umute.add_field(name="Member", value=f"{member.mention}", inline=True)
         umute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=umute)
-        await log_channel.send(embed=umute)
+        try:
+            await log_channel.send(embed=umute)
+        except:
+            pass
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
@@ -237,7 +249,7 @@ class Moderation(commands.Cog):
         amount, unit = duration
         if member is None:
             await ctx.reply(
-                "Time for somebody to shut up!<:vadishhhh:794639608071585802>")        
+                "Time for somebody to shut up!<:FeelsSpicyMan:915265533597855834>")        
 
         guild = ctx.guild
         log_channel = discord.utils.get(guild.text_channels,
@@ -261,8 +273,11 @@ class Moderation(commands.Cog):
             description=f'{member.mention} has been unmuted',
             color=ctx.author.color)
         await ctx.reply(embed=utmute)
-        await log_channel.send(embed=utmute)
-
+        try:
+            await log_channel.send(embed=utmute)
+        except:
+            pass
+        
     @tempmute.error
     async def tempmute_error(self, ctx, error):
         if isinstance(error, MissingPermissions):

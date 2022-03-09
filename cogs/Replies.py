@@ -83,41 +83,8 @@ class Replies(commands.Cog):
       await ctx.send("https://media.giphy.com/media/USNlL9p2fxY6Q/giphy.gif")
       return
     else:
-      gifs=["https://media.giphy.com/media/LowuSEmgBGEso/giphy.gif",
-      
-      "https://media.giphy.com/media/p7QJSVvU4bMWc/giphy.gif",
-      
-      "https://media.giphy.com/media/cjvFRb8DyAk0g/giphy.gif",
-      
-      "https://media.giphy.com/media/MCpVd5NJhNXJRkXV60/giphy.gif",
-      
-      "https://media.giphy.com/media/NQ43L8yLRg3iE/giphy.gif",
-      
-      "https://media.giphy.com/media/12mQQxo2lHcyhG/giphy.gif",
-      
-      "https://media.giphy.com/media/ovrcwymJaF9f2/giphy.gif",
-      
-      "https://media.giphy.com/media/v87ycxiegXFF6/giphy.gif",
-      
-      "https://media.giphy.com/media/10ZuedtImbopos/giphy.gif",
-      
-      "https://media.giphy.com/media/gQbVzXQQbGO7C/giphy.gif",
-      
-      "https://media.giphy.com/media/gQbVzXQQbGO7C/giphy.gif",
-      
-      "https://media.giphy.com/media/b1dXky39p5Zcs/giphy.gif",
-      
-      "https://media.giphy.com/media/14kYBP3sOq3ubm/giphy.gif",
-      
-      "https://media.giphy.com/media/irWbG2YwTDXR6/giphy.gif",
-      
-      "https://media.giphy.com/media/eR7OEDQDyA7Cg/giphy.gif",
-      
-      "https://media.giphy.com/media/KmG26GNmdWOUE/giphy.gif",
-      
-      "https://media.giphy.com/media/NNmJyVWriRDlS/giphy.gif"]
       arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!", color=member.top_role.colour) 
-      arrest.set_image(url=random.choice(gifs))
+      arrest.set_image(url=random.choice(arrest_reply))
       await ctx.reply(embed=arrest)
   
   @commands.Cog.listener()
@@ -134,18 +101,7 @@ class Replies(commands.Cog):
     if 'sentient' in message.content:
       await message.channel.send("**Bot Instrumentality Project Undergoing!**")
       await message.channel.send("https://tenor.com/bh980.gif")
-
-    """if message.content.lower().startswith('spike google'):
-      if message.content.lower() in bannedwords:
-        await message.channel.send("Fuck You!")
-        return
-      else:      
-        searchContent = ""
-        text = str(message.content).split(' ')
-        for i in range(2, len(text)):
-          searchContent = searchContent + text[i]
-        for j in search(searchContent, tld="com", num=1, stop=1, pause=2):
-          await message.channel.send(j)"""  
+      
 
   @commands.command()
   async def google(self, ctx,*, query):
