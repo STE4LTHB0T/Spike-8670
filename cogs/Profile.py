@@ -6,7 +6,6 @@ from pymongo import MongoClient
 cluster = MongoClient(os.environ['MONGO'])
 profile = cluster["discord"]["profiles"]
 
-
 class Profile(commands.Cog):
 
   def __init__(self, client):
@@ -37,8 +36,7 @@ class Profile(commands.Cog):
     if member is None:
       member = ctx.author
     tag=profile.find({"id":member.id})
-    results= list(tag)
-    if len(results)==0:
+    if tag.count()==0:
       pathetic=discord.Embed(description="No profile found!")
       await ctx.channel.send(embed=pathetic)      
     else:
