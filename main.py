@@ -102,11 +102,6 @@ async def on_guild_join(guild):
     break
 
 
-for filename in os.listdir('./cogs'):
-  if filename.endswith('.py'):
-    client.load_extension(f'cogs.{filename[:-3]}')
-
-
 @client.event
 async def on_member_join(member):
   guild = client.get_guild(414057277050585088)
@@ -138,6 +133,11 @@ async def followers():
   followcount = str(profile.followers)
   instagram_channel = guild.get_channel(int(840917916320923698))
   await instagram_channel.edit(name=f'📷 Instagram: {followcount}')
+
+
+for filename in os.listdir('./cogs'):
+  if filename.endswith('.py'):
+    client.load_extension(f'cogs.{filename[:-3]}')
 
 
 followers.start()
