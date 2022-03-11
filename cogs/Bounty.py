@@ -40,7 +40,7 @@ class Bounty(commands.Cog):
 				ratelimit = self.get_ratelimit(message)
 			if ratelimit is None:
 				if stats is None:
-					newuser = {"name":message.author.name,"id":message.author.id, "xp": 0, "guild id":message.author.guild.id, "guild name":message.author.guild.name}
+					newuser = {"_id":number, "name":message.author.name,"id":message.author.id, "xp": 0, "guild id":message.author.guild.id, "guild name":message.author.guild.name}
 					ranking.insert_one(newuser)
 				else:
 					xp=stats["xp"]+10
