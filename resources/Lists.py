@@ -155,7 +155,7 @@ welcome_reply=['https://media.giphy.com/media/4ilFRqgbzbx4c/giphy.gif',
 
     'https://i.imgur.com/t3GVq93.gif',
 
-    'https://64.media.tumblr.com/7d3ebbb1f32cf5296d4555a1fc182ac0/cb4a12f342102665-14/s500x750/060e62916e189bea3c2113d17cea6eabafb8a5e4.gifv'
+    'https://64.media.tumblr.com/7d3ebbb1f32cf5296d4555a1fc182ac0/cb4a12f342102665-14/s500x750/060e62916e189bea3c2113d17cea6eabafb8a5e4.gifv',
 
     'https://c.tenor.com/ZwsoBWFiRVYAAAAC/cowboy-bebop-anime.gif',
 
