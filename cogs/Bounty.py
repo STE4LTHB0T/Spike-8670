@@ -79,7 +79,7 @@ class Bounty(commands.Cog):
 				lvl +=1
 			xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 			mark = int((xp/(200*((1/2)* lvl)))*5)
-			rankings = ranking.find({"id":member.id, "guild id":ctx.guild.id}).sort("xp",-1)
+			rankings = ranking.find({"guild id":ctx.guild.id}).sort("xp",-1)
 			for x in rankings:
 				rank +=1
 				if stats["id"] == x ["id"]:
