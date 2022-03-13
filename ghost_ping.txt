@@ -1,1 +1,0 @@
-{"everyone": true, "roles": true, "members": true}
