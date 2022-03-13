@@ -20,25 +20,34 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def trade(self,ctx,member:discord.Member,woolong:int):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-        message=await ctx.send("Beginning Bounty Transaction!")
-        async with ctx.typing():
-            await asyncio.sleep(0.5)        
-        await message.edit(content=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
-
+        if member.id==ctx.author.id:
+            await ctx.send("You can't trade with yourself!")
+            return
         sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-        reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
-        
-        send=sender["woolongs"]-woolong
-        recieve=reciever["woolongs"]+woolong
-        
-        sender=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":send}})
-        reciever=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":recieve}})
-        
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-        await message.edit(content="Bounty Transaction successful!")
+        temp=sender["woolongs"]
+        if woolong>temp:
+            await ctx.send("You are broke!")
+            return
+        else:
+            async with ctx.typing():
+                await asyncio.sleep(0.5)
+            message=await ctx.send("Beginning Bounty Transaction!")
+            async with ctx.typing():
+                await asyncio.sleep(0.5)        
+            await message.edit(content=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
+
+            sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+            reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+
+            send=sender["woolongs"]-woolong
+            recieve=reciever["woolongs"]+woolong
+
+            sender=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":send}})
+            reciever=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":recieve}})
+
+            async with ctx.typing():
+                await asyncio.sleep(0.5)
+            await message.edit(content="Bounty Transaction successful!")
 
     @commands.command()
     @commands.check(is_it_ON)
@@ -77,6 +86,9 @@ class Economy(commands.Cog):
                 emoji=payload.emoji.name
                 re=discord.Embed(description=f"Role assigned!",color=discord.Color.red())
                 check=discord.Embed(description="Role is already available for the user!",color=discord.Color.red())
+                broke=discord.Embed(description="You are broke!",color=discord.Color.red())
+                
+                #komi-sama cult
                 if emoji == '1⃣':
                     if ksc in member.roles:
                         await self.client.msg.edit(embed=check)
@@ -85,18 +97,27 @@ class Economy(commands.Cog):
                     else:
                         rksc=10000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-rksc
+                        temprksc=buyer["woolongs"]
+                        if rksc>temprksc:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return
+                        else:
+                            buying=buyer["woolongs"]-rksc
 
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+rksc
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+rksc
 
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
 
-                        await member.add_roles(ksc)
-                        await self.client.msg.edit(embed=re)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                            await member.add_roles(ksc)
+                            await self.client.msg.edit(embed=re)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                
+                #marin-sama cult
                 elif emoji == '2⃣':
                     if msc in member.roles:
                         await self.client.msg.edit(embed=check)
@@ -105,19 +126,28 @@ class Economy(commands.Cog):
                     else:
                         msc=10000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-msc
+                        tempmsc=buyer["woolongs"]
+                        if msc>tempmsc:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return
+                        else:
+                            buying=buyer["woolongs"]-msc
 
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+msc
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+msc
 
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
-                        
-                        await member.add_roles(msc)
-                        await self.client.msg.edit(embed=re)
-                        await self.client.msg.clear_reaction(emoji)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+
+                            await member.add_roles(msc)
+                            await self.client.msg.edit(embed=re)
+                            await self.client.msg.clear_reaction(emoji)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                
+                #monogatari
                 elif emoji == '3⃣': #'3⃣', '4⃣', '5⃣'
                     if mc in member.roles:
                         await self.client.msg.edit(embed=check)
@@ -126,19 +156,28 @@ class Economy(commands.Cog):
                     else:
                         rmc=10000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-rmc
+                        temprmc=buyer["woolongs"]
+                        if rmc>temprmc:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return           
+                        else:             
+                            buying=buyer["woolongs"]-rmc
 
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+rmc
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+rmc
 
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
-                        
-                        await member.add_roles(mc)
-                        await self.client.msg.edit(embed=re)
-                        await self.client.msg.clear_reaction(emoji)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+
+                            await member.add_roles(mc)
+                            await self.client.msg.edit(embed=re)
+                            await self.client.msg.clear_reaction(emoji)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                
+                #bot na cult
                 elif emoji == '4⃣':
                     if bnc in member.roles:
                         await self.client.msg.edit(embed=check)
@@ -147,41 +186,59 @@ class Economy(commands.Cog):
                     else:
                         rbnc=10000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-rbnc
+                        temprbnc=buyer["woolongs"]
+                        if rbnc>temprbnc:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return      
+                        else:                  
+                            buying=buyer["woolongs"]-rbnc
 
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+rbnc
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+rbnc
 
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
-                        
-                        await member.add_roles(bnc)
-                        await self.client.msg.edit(embed=re)
-                        await self.client.msg.clear_reaction(emoji)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+
+                            await member.add_roles(bnc)
+                            await self.client.msg.edit(embed=re)
+                            await self.client.msg.clear_reaction(emoji)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                
+                #xkami cult
                 elif emoji == '5⃣':
                     if xc in member.roles:
                         await self.client.msg.edit(embed=check)
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rxc=10000
+                        rxc=50000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-rxc
+                        temprxc=buyer["woolongs"]
+                        if rxc>temprxc:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return
+                        else:                        
+                            buying=buyer["woolongs"]-rxc
 
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+rxc
-
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
-                        
-                        await member.add_roles(xc)
-                        await self.client.msg.edit(embed=re)
-                        await self.client.msg.clear_reaction(emoji)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)                
-                else:
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+rxc
+    
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            
+                            await member.add_roles(xc)
+                            await self.client.msg.edit(embed=re)
+                            await self.client.msg.clear_reaction(emoji)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)                
+                
+                #mute pass
+                else:   
                     if tmp in member.roles:
                         await self.client.msg.edit(embed=check)
                         for reaction in self.client.reactions:
@@ -189,19 +246,26 @@ class Economy(commands.Cog):
                     else:
                         rtmp=50000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        buying=buyer["woolongs"]-rtmp
-
-                        seller=ranking.find_one({"id": "804347400004173864"})
-                        selling=seller["woolongs"]+rtmp
-
-                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
-
-                        await member.add_roles(tmp)
-                        await self.client.msg.edit(embed=re)
-                        await self.client.msg.clear_reaction(emoji)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                        temprtmp=buyer["woolongs"]
+                        if rtmp>temprtmp:
+                            await self.client.msg.edit(embed=broke)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                            return       
+                        else:                     
+                            buying=buyer["woolongs"]-rtmp
+    
+                            seller=ranking.find_one({"id": "804347400004173864"})
+                            selling=seller["woolongs"]+rtmp
+    
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+    
+                            await member.add_roles(tmp)
+                            await self.client.msg.edit(embed=re)
+                            await self.client.msg.clear_reaction(emoji)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
 
     @commands.command()
     async def woolongs(self,ctx):
