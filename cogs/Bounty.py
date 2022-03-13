@@ -93,7 +93,6 @@ class Bounty(commands.Cog):
 				bounty.add_field(name="Bounty Level Priority", value=member.top_role.mention, inline = True)
 			else:
 				pass
-			bounty.add_field(name="Bounty Level Priority", value=member.top_role.mention, inline = True)
 			bounty.add_field(name="Bounty Level Progress", value=mark* ":x:" + (5-mark)*":heavy_multiplication_x:", inline=False)
 			bounty.set_thumbnail(url=member.avatar_url)
 			await ctx.reply(embed=bounty)
