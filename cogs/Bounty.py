@@ -28,7 +28,7 @@ class Bounty(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_message(self,message):
-		stats = ranking.find_one({"id":message.author.id})
+		stats = ranking.find_one({"id":message.author.id, "guild id":message.guild.id})
 		if not message.author.bot:
 			if not message.guild:
 				return
