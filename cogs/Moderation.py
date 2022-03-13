@@ -5,7 +5,6 @@ from discord.ext.commands import MissingPermissions
 from main import is_it_trustees
 from resources.Lists import *
 
-
 class DurationConverter(commands.Converter):
     async def convert(self, ctx, argument):
         amount = argument[:-1]
@@ -186,6 +185,21 @@ class Moderation(commands.Cog):
           await ctx.send(f'Ne ellam porandhadhey saaba kedu, idhula {member.mention} nu peru onnuh dhan kedu!')
   
     @commands.command()
+    async def mutepass(self,ctx, member:discord.Member = None, *, reason=None):
+        if member is None:
+            await ctx.send("Time to flex my power")
+        if reason is None:
+            reason="with great power, comes great responsibility."
+        tm= discord.utils.get(ctx.guild.roles, name="The Mute Pass")
+        muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+        if tm in ctx.author.roles:
+            await member.add_roles(muted_role)
+            await ctx.send(f"{ctx.author.mention} muted {member.mention} using {tm.mention} because {reason}")
+        else:
+            await ctx.send("Try getting a pass!")
+        await ctx.author.remove_roles(tm)    
+
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member = None, *, reason=None):
         if member is None:
@@ -240,6 +254,25 @@ class Moderation(commands.Cog):
             await log_channel.send(embed=umute)
         except:
             pass
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def tempmutepass(self, ctx, member: discord.Member,
+                       duration: DurationConverter):
+        multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}
+        amount, unit = duration
+        if member is None:
+            await ctx.send("Time to flex my powers!")
+        tm= discord.utils.get(ctx.guild.roles, name="The Mute Pass")
+        muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+        if tm in ctx.author.roles:
+            await member.add_roles(muted_role)
+            await ctx.author.remove_roles(tm)
+            await ctx.send(f"{ctx.author.mention} muted {member.mention} using {tm.mention} for {amount}{unit}!")
+            await asyncio.sleep(amount * multiplier[unit])
+            await member.remove_roles(muted_role)
+        else:
+            await ctx.send("Try getting a pass!")
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)

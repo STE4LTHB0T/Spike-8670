@@ -5,6 +5,11 @@ from discord import Intents, Embed
 from resources.Lists import *
 from dotenv import load_dotenv
 load_dotenv('./*.env')
+
+from config import config
+from cogs.musicbot.audiocontroller import AudioController
+from cogs.musicbot.settings import Settings
+from cogs.musicbot.utils import guild_to_audiocontroller, guild_to_settings
   
 
 client = commands.Bot(case_insensitive=True, command_prefix=['spike ', 'Spike '], intents=discord.Intents.all())
@@ -15,6 +20,11 @@ client.remove_command('help')
 async def on_ready():
   print('We have logged in as {0.user}!'.format(client))
   await client.change_presence(activity=discord.Game(name="as an old-fashioned cowboy🚬"))
+
+
+  for guild in client.guilds:
+    await register(guild)
+    print("Joined {}".format(guild.name))
 
 
 async def is_it_me(ctx):
@@ -124,6 +134,40 @@ async def on_member_remove(member):
   await total_channel.edit(name=f'📈 Total: {guild.member_count}')
 
 
+@client.event
+async def on_guild_join(guild):
+    print(guild.name)
+    await register(guild)
+
+
+async def register(guild):
+
+    guild_to_settings[guild] = Settings(guild)
+    guild_to_audiocontroller[guild] = AudioController(client, guild)
+
+    sett = guild_to_settings[guild]
+
+    if config.GLOBAL_DISABLE_AUTOJOIN_VC == True:
+        return
+
+    vc_channels = guild.voice_channels
+
+    if sett.get('vc_timeout') == False:
+        if sett.get('start_voice_channel') == None:
+            try:
+                await guild_to_audiocontroller[guild].register_voice_channel(guild.voice_channels[0])
+            except Exception as e:
+                print(e)
+
+        else:
+            for vc in vc_channels:
+                if vc.id == sett.get('start_voice_channel'):
+                    try:
+                        await guild_to_audiocontroller[guild].register_voice_channel(vc_channels[vc_channels.index(vc)])
+                    except Exception as e:
+                        print(e)
+
+
 @tasks.loop(minutes=5.0)
 async def followers():
   await client.wait_until_ready()
@@ -135,9 +179,16 @@ async def followers():
   await instagram_channel.edit(name=f'📷 Instagram: {followcount}')
 
 
+music_extensions=['cogs.musicbot.commands.music','cogs.musicbot.commands.general']
+
+
 for filename in os.listdir('./cogs'):
   if filename.endswith('.py'):
     client.load_extension(f'cogs.{filename[:-3]}')
+
+
+for extensions in music_extensions:
+  client.load_extension(extensions)
 
 
 followers.start()

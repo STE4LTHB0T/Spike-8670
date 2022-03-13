@@ -1,6 +1,7 @@
 import discord, time
 from datetime import datetime
 from discord.ext import commands
+from discord.utils import get
 
 class DM(commands.Cog):
 
@@ -14,7 +15,6 @@ class DM(commands.Cog):
   @commands.Cog.listener()
   async def on_member_join(self,member):
       member.send("Welcome to Otaku Nadu!\n***Otaku Nadu*** is a Tamil Server made for the community of followers who follow the page of the same name!\n\nWe want to connect people who love Anime together and we wish that you will enjoy the time on our server!\n\nStay active and have fun :3")
-
 
   @commands.Cog.listener()
   async def beactive(self):
