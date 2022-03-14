@@ -1,7 +1,7 @@
-from unittest.mock import NonCallableMagicMock
-import discord, os, asyncio
+import discord, os, asyncio, datetime
 from discord.ext import commands
 from pymongo import MongoClient
+
 
 cluster = MongoClient(os.environ['MONGO'])
 
@@ -25,6 +25,20 @@ class Economy(commands.Cog):
                 new_guild={"name":"Spike","id": "804347400004173864", "guild id":guild.id, "guild name":guild.name, "woolongs":0}
                 ranking.insert_one(new_guild)
                 print("Added {}".format(guild.name))
+
+    @commands.command()
+    @commands.cooldown(1, 86400.0, commands.BucketType.user)
+    async def daily(self,ctx):
+        work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+        wager=work["woolongs"]+100
+        work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
+        await ctx.reply("Your work has been appreciated!")
+
+    @commands.Cog.listener()
+    async def on_command_error(self,ctx,error):
+        if isinstance(error, commands.CommandOnCooldown):
+            remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
+            await ctx.reply(f"Your work has already been appreciated! Please come again after "+str(remaining_time))
 
     @commands.command()
     async def trade(self,ctx,member:discord.Member,woolong:int):
