@@ -3,7 +3,7 @@ from discord.ext import commands
 from pymongo import MongoClient
 
 level = ["Shinobi", "Aku", "Avengers", "Espada", "Super Saiyajin", "Kaizoku"]
-levelnum = [2,10,15,25,35,50]
+levelnum = [5,10,30,40,45,50]
 
 cluster = MongoClient(os.environ['MONGO'])
 
