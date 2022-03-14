@@ -1,3 +1,4 @@
+from unittest.mock import NonCallableMagicMock
 import discord, os, asyncio
 from discord.ext import commands
 from pymongo import MongoClient
@@ -17,6 +18,13 @@ class Economy(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Economy is loaded!')
+
+        for guild in self.client.guilds:
+            spike=ranking.find_one({"id": "804347400004173864", "guild id": guild.id})
+            if spike is None:
+                new_guild={"name":"Spike","id": "804347400004173864", "guild id":guild.id, "guild name":guild.name, "woolongs":0}
+                ranking.insert_one(new_guild)
+                print("Added {}".format(guild.name))
 
     @commands.command()
     async def trade(self,ctx,member:discord.Member,woolong:int):
@@ -75,12 +83,15 @@ class Economy(commands.Cog):
         if payload.member.bot:
             return
         else:
+
             ksc = discord.utils.get(payload.member.guild.roles, name='Komi-sama Cult')
             msc = discord.utils.get(payload.member.guild.roles, name='Marin-sama Cult')
             mc = discord.utils.get(payload.member.guild.roles, name='Monogatari Circlejerk')
             bnc = discord.utils.get(payload.member.guild.roles, name='Bot Na Cult')
             xc = discord.utils.get(payload.member.guild.roles, name='Xkami Cult')
             tmp = discord.utils.get(payload.member.guild.roles, name='The Mute Pass')            
+            
+            
             if reactid == payload.message_id:
                 member=payload.member
                 emoji=payload.emoji.name
@@ -106,11 +117,11 @@ class Economy(commands.Cog):
                         else:
                             buying=buyer["woolongs"]-rksc
 
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+rksc
 
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
 
                             await member.add_roles(ksc)
                             await self.client.msg.edit(embed=re)
@@ -135,11 +146,11 @@ class Economy(commands.Cog):
                         else:
                             buying=buyer["woolongs"]-msc
 
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+msc
 
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
 
                             await member.add_roles(msc)
                             await self.client.msg.edit(embed=re)
@@ -165,11 +176,11 @@ class Economy(commands.Cog):
                         else:             
                             buying=buyer["woolongs"]-rmc
 
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+rmc
 
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
 
                             await member.add_roles(mc)
                             await self.client.msg.edit(embed=re)
@@ -195,11 +206,11 @@ class Economy(commands.Cog):
                         else:                  
                             buying=buyer["woolongs"]-rbnc
 
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+rbnc
 
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
 
                             await member.add_roles(bnc)
                             await self.client.msg.edit(embed=re)
@@ -225,11 +236,11 @@ class Economy(commands.Cog):
                         else:                        
                             buying=buyer["woolongs"]-rxc
 
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+rxc
     
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
                             
                             await member.add_roles(xc)
                             await self.client.msg.edit(embed=re)
@@ -255,11 +266,11 @@ class Economy(commands.Cog):
                         else:                     
                             buying=buyer["woolongs"]-rtmp
     
-                            seller=ranking.find_one({"id": "804347400004173864"})
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
                             selling=seller["woolongs"]+rtmp
     
                             buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864"},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
     
                             await member.add_roles(tmp)
                             await self.client.msg.edit(embed=re)
@@ -267,11 +278,16 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
 
+
     @commands.command()
-    async def woolongs(self,ctx):
-        wl=ranking.find_one({"id":804347400004173864, "guild.id":ctx.guild.id})
-        cur=wl["woolongs"]
-        await ctx.send(f"{ctx.author.mention} has {cur} Woolongs!")
+    async def bank(self,ctx):
+        id="804347400004173864"
+        spike=ranking.find_one({"id":id, "guild id":ctx.guild.id})
+        balance=spike["woolongs"]
+        bal= discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {balance}**", color=discord.Color.red())			
+        bal.set_image(url=self.client.user.avatar_url)
+        await ctx.reply(embed=bal)
+
         
 def setup(client):
   client.add_cog(Economy(client))
