@@ -32,7 +32,7 @@ class Economy(commands.Cog):
         work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         wager=work["woolongs"]+100
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
-        await ctx.reply("Your work has been appreciated!")
+        await ctx.reply("Your work has been appreciated! You have been given {wager} Woolongs for your work!")
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
@@ -78,12 +78,12 @@ class Economy(commands.Cog):
         self.client.uid = self.client.user.id 
         self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] #['7⃣', '8⃣', '9⃣', '🔟']
         rembed=discord.Embed(title="Woolong Roles",description="Sell Woolongs for a role",color=discord.Color.red())
-        rembed.add_field(name=':one: Komi-sama Cult', value='10000 Woolongs', inline=True)
-        rembed.add_field(name=':two: Marin-sama Cult', value='10000 Woolongs', inline=True)
-        rembed.add_field(name=':three: Monogatari Circlejerk', value='10000 Woolongs', inline=True)
-        rembed.add_field(name=':four: Bot Na Cult', value='10000 Woolongs', inline=True)
-        rembed.add_field(name=':five: Xkami Cult', value='10000 Woolongs', inline=True)
-        rembed.add_field(name=':six: The Mute Pass', value='50000 Woolongs', inline=True)
+        rembed.add_field(name=':one: Komi-sama Cult', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':two: Marin-sama Cult', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':three: Monogatari Circlejerk', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':four: Bot Na Cult', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':five: Xkami Cult', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':six: The Mute Pass', value='75000 Woolongs', inline=True)
         rembed.set_thumbnail(url=self.client.user.avatar_url)
         self.client.msg=await ctx.send(embed=rembed)
         for reaction in self.client.reactions:
@@ -120,7 +120,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rksc=10000
+                        rksc=25000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         temprksc=buyer["woolongs"]
                         if rksc>temprksc:
@@ -149,7 +149,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        msc=10000
+                        msc=25000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         tempmsc=buyer["woolongs"]
                         if msc>tempmsc:
@@ -179,7 +179,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rmc=10000
+                        rmc=25000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         temprmc=buyer["woolongs"]
                         if rmc>temprmc:
@@ -209,7 +209,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rbnc=10000
+                        rbnc=25000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         temprbnc=buyer["woolongs"]
                         if rbnc>temprbnc:
@@ -239,7 +239,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rxc=50000
+                        rxc=25000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         temprxc=buyer["woolongs"]
                         if rxc>temprxc:
@@ -269,7 +269,7 @@ class Economy(commands.Cog):
                         for reaction in self.client.reactions:
                             await self.client.msg.clear_reaction(reaction)
                     else:
-                        rtmp=50000
+                        rtmp=75000
                         buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                         temprtmp=buyer["woolongs"]
                         if rtmp>temprtmp:
