@@ -41,8 +41,8 @@ class Bounty(commands.Cog):
 					newuser = {"name":message.author.name,"id":message.author.id, "guild id":message.author.guild.id, "guild name":message.author.guild.name, "xp": 0, "woolongs":0}
 					ranking.insert_one(newuser)
 				else:
-					xp=stats["xp"]+10
-					woolongs=stats["woolongs"]+10
+					xp=stats["xp"]+100
+					woolongs=stats["woolongs"]+100	
 					ranking.update_one({"id":message.author.id, "guild id":message.author.guild.id},{"$set":{"xp":xp}})
 					ranking.update_one({"id":message.author.id, "guild id":message.author.guild.id},{"$set":{"woolongs":woolongs}})
 					lvl = 0
