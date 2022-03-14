@@ -65,7 +65,7 @@ class Bounty(commands.Cog):
 	async def bounty(self,ctx,member:discord.Member=None):
 		if member is None:
 			member=ctx.author
-		stats=ranking.find_one({"guild id":ctx.guild.id})
+		stats=ranking.find_one({"id":member	.id, "guild id":member.guild.id})
 		if stats is None:
 			pathetic=discord.Embed(description="You have no bounty!")
 			await ctx.channel.send(embed=pathetic)
