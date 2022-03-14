@@ -109,7 +109,7 @@ class Replies(commands.Cog):
       searchContent = query
       for i in search(searchContent,tld="com", num=1, stop=1, pause=2):
         await ctx.reply(i)
-    else:
+    else: 
       await ctx.reply("Fuck You!")			
 			
 
@@ -117,13 +117,10 @@ class Replies(commands.Cog):
   async def wanted(self,ctx,member:discord.Member=None):
     if member is None:
       member=ctx.author
-    bounty = ranking.find_one({"id":member.id})
+    bounty = ranking.find_one({"id":member.id, "guild id":member.guild.id})
     bounty_value = bounty["xp"]
-    number = random.randint(0, 10000)
-    if ctx.guild.id == 414057277050585088:
-      wanted= discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: ${bounty_value}**",color=member.top_role.colour)
-    else:
-      wanted= discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: ${number}**",color=member.top_role.colour)			
+    woolongs= bounty["woolongs"]
+    wanted= discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: <:woolongs:952789606762438686> {bounty_value}**\n **Woolongs: <:woolongs:952789606762438686> {woolongs}**", color=member.top_role.colour)			
     wanted.set_image(url=member.avatar_url)
     await ctx.reply(embed=wanted)
 
