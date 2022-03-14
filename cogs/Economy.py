@@ -82,7 +82,7 @@ class Economy(commands.Cog):
         rembed.add_field(name=':two: Marin-sama Cult', value='25000 Woolongs', inline=True)
         rembed.add_field(name=':three: Monogatari Circlejerk', value='25000 Woolongs', inline=True)
         rembed.add_field(name=':four: Bot Na Cult', value='25000 Woolongs', inline=True)
-        rembed.add_field(name=':five: Xkami Cult', value='25000 Woolongs', inline=True)
+        rembed.add_field(name=':five: XKami Cult', value='25000 Woolongs', inline=True)
         rembed.add_field(name=':six: The Mute Pass', value='75000 Woolongs', inline=True)
         rembed.set_thumbnail(url=self.client.user.avatar_url)
         self.client.msg=await ctx.send(embed=rembed)
@@ -102,7 +102,7 @@ class Economy(commands.Cog):
             msc = discord.utils.get(payload.member.guild.roles, name='Marin-sama Cult')
             mc = discord.utils.get(payload.member.guild.roles, name='Monogatari Circlejerk')
             bnc = discord.utils.get(payload.member.guild.roles, name='Bot Na Cult')
-            xc = discord.utils.get(payload.member.guild.roles, name='Xkami Cult')
+            xc = discord.utils.get(payload.member.guild.roles, name='XKami Cult')
             tmp = discord.utils.get(payload.member.guild.roles, name='The Mute Pass')            
             
             
