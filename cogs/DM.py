@@ -20,7 +20,7 @@ class DM(commands.Cog):
   async def beactive(self):
       guild=414057277050585088
       pastDate = open("./resources/pastDate.txt","r")
-      check_role = get(guild.message.server.roles, name='Shinobi')
+      check_role = discord.utils.get(guild.message.server.roles, name='Shinobi')
       if (datetime.now() - pastDate).days>1:       
           for member in guild.members:
               if check_role not in member.roles:
