@@ -11,7 +11,7 @@ class Settings():
         self.guild = guild
         self.json_data = None
         self.config = None
-        self.path = '/home/thevigilante/Spike-8670/cogs/musicbot/generated/settings.json'
+        self.path = './cogs/musicbot/generated/settings.json'
 
         self.settings_template = {
             "id": 0,
