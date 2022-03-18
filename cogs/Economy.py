@@ -45,6 +45,10 @@ class Economy(commands.Cog):
         if member.id==ctx.author.id:
             await ctx.send("You can't trade with yourself!")
             return
+        if member==self.client.user:
+            await ctx.send("If you are feeling generous, I will take your entire bank balance!")
+            return
+
         sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         temp=sender["woolongs"]
         if woolong>temp:
@@ -298,40 +302,34 @@ class Economy(commands.Cog):
         id="804347400004173864"
         spike=ranking.find_one({"id":id, "guild id":ctx.guild.id})
         balance=spike["woolongs"]
-        bal= discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {balance}**", color=discord.Color.red())			
+        bal=discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {balance}**", color=discord.Color.red())			
         bal.set_image(url=self.client.user.avatar_url)
         await ctx.reply(embed=bal)
 
 
     @commands.command()
-    @commands.cooldown(1, 86400.0, commands.BucketType.member)
-    async def steal(self,ctx, member:discord.Member):
-        count = 0
-        if count >5:
-            await ctx.send("Time to pay for your crimes!")
-            muted_role = discord.utils.get(self.client.guild.roles, name="Muted")
-            await ctx.add_roles(muted_role)
-            await asyncio.sleep(900)
-            await ctx.remove_roles(muted_role)
-            await ctx.send("beware of your crimes next time!")
-        else:            
-            if member.id==ctx.author.id:
-                await ctx.send("You can't trade with yourself!")
-                return
+    @commands.cooldown(1, 86400.0, commands.BucketType.user)
+    async def steal(self,ctx,member:discord.Member):
+        if member.id==self.client.user.id:
+            await ctx.send("Stealing from a bank! Calling the ISSP!")
+            return
 
-            thief=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-            victim=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+        if member.id==ctx.author.id:
+            await ctx.send("You can't trade with yourself!")
+            return
 
-            remove=random.randint(0,1000)
+        thief=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+        victim=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
 
-            profit=thief["woolongs"]+remove
-            loss=victim["woolongs"]-remove
+        remove=random.randint(0,1000)
 
-            thief=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":profit}})
-            victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
+        profit=thief["woolongs"]+remove
+        loss=victim["woolongs"]-remove
 
-            await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
-            count +=1
+        thief=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":profit}})
+        victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
+
+        await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
 
 def setup(client):
   client.add_cog(Economy(client))
