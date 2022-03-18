@@ -1,4 +1,4 @@
-import discord, os, asyncio, datetime
+import discord, os, asyncio, datetime, random
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -32,7 +32,7 @@ class Economy(commands.Cog):
         work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         wager=work["woolongs"]+100
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
-        await ctx.reply(f"Your work has been appreciated! You have been given {wager} Woolongs for your work!")
+        await ctx.reply(f"Your work has been appreciated! You have been given 100 Woolongs for your work!")
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
@@ -302,6 +302,36 @@ class Economy(commands.Cog):
         bal.set_image(url=self.client.user.avatar_url)
         await ctx.reply(embed=bal)
 
-        
+
+    @commands.command()
+    @commands.cooldown(1, 86400.0, commands.BucketType.member)
+    async def steal(self,ctx, member:discord.Member):
+        count = 0
+        if count >5:
+            await ctx.send("Time to pay for your crimes!")
+            muted_role = discord.utils.get(self.client.guild.roles, name="Muted")
+            await ctx.add_roles(muted_role)
+            await asyncio.sleep(900)
+            await ctx.remove_roles(muted_role)
+            await ctx.send("beware of your crimes next time!")
+        else:            
+            if member.id==ctx.author.id:
+                await ctx.send("You can't trade with yourself!")
+                return
+
+            thief=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+            victim=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+
+            remove=random.randint(0,1000)
+
+            profit=thief["woolongs"]+remove
+            loss=victim["woolongs"]-remove
+
+            thief=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":profit}})
+            victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
+
+            await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
+            count +=1
+
 def setup(client):
   client.add_cog(Economy(client))
