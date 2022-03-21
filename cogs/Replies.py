@@ -1,10 +1,9 @@
-import discord, time, datetime, asyncio, random, giphy_client, os
+import discord, time, datetime, asyncio, random, os
 from datetime import datetime
 from discord.ext import commands
 from googlesearch import search
 from pymongo import MongoClient
 from resources.Lists import *
-from giphy_client.rest import ApiException 
 
 cluster = MongoClient(os.environ['MONGO'])
 
@@ -14,6 +13,7 @@ class Replies(commands.Cog):
 
   def __init__(self, client):
     self.client = client	
+    self.last_msg = None
 
   @commands.Cog.listener()
   async def on_ready(self):
@@ -28,12 +28,8 @@ class Replies(commands.Cog):
     await ctx.reply(f"Your ping is **{ping}ms**.")
 
   @commands.command()
-  async def aping(self, ctx):
+  async def botping(self, ctx):
     await ctx.reply(f'{round(self.client.latency*1000)}ms')
-
-  @commands.command()
-  async def date(self,ctx):
-    await ctx.reply(f"{datetime.now().strftime('%B %d %Y - %H:%M:%S')}")
 
   @commands.command()
   async def spotify(self, ctx, user: discord.Member = None):
@@ -52,13 +48,6 @@ class Replies(commands.Cog):
     embed.add_field(name="Track Link", value=f"[{spot.title}](https://open.spotify.com/track/{spot.track_id})",inline=True)
     embed.set_thumbnail(url=spot.album_cover_url)
     await ctx.reply(embed=embed)
-
-  @commands.command()
-  async def pain(self,ctx):
-    await ctx.message.delete()
-    async with ctx.typing():
-      await asyncio.sleep(0.5)
-    await ctx.send("sed laif")
 
   @commands.command()
   async def echo(self, ctx, *, content:str):
@@ -117,32 +106,33 @@ class Replies(commands.Cog):
   async def wanted(self,ctx,member:discord.Member=None):
     if member is None:
       member=ctx.author
-    bounty = ranking.find_one({"id":member.id, "guild id":member.guild.id})
-    bounty_value = bounty["xp"]
-    woolongs= bounty["woolongs"]
-    wanted= discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: <:woolongs:952789606762438686> {bounty_value}**\n **Woolongs: <:woolongs:952789606762438686> {woolongs}**", color=member.top_role.colour)			
-    wanted.set_image(url=member.avatar_url)
-    await ctx.reply(embed=wanted)
+    try:
+      bounty = ranking.find_one({"id":member.id, "guild id":member.guild.id})
+      bounty_value = bounty["xp"]
+      woolongs= bounty["woolongs"]
+      wanted=discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: <:woolongs:952789606762438686> {bounty_value}**\n **Woolongs: <:woolongs:952789606762438686> {woolongs}**", color=member.top_role.colour)			
+      wanted.set_image(url=member.avatar_url)
+      await ctx.reply(embed=wanted)
+    except:
+      avatar=discord.Embed(description=f"**WANTED** {member.mention}**!", color=member.top_role.colour)
+      wanted.set_image(url=member.avatar_url)
+      await ctx.reply(embed=avatar)
+    
+    @commands.Cog.listener()
+    async def on_message_delete(self, message: discord.Message):
+      self.last_msg = message
 
-  @commands.command()
-  async def gif(self,ctx,*,search):
+    @commands.command(name="snipe")
+    async def snipe(self, ctx: commands.Context):
+      if not self.last_msg:
+        await ctx.send("There is no message to snipe!")
+        return
 
-    api_key="hiw1KTLvX47dVLiJGHZrInUk1HILL7a9"
-    api_instance = giphy_client.DefaultApi()
+      author = self.last_msg.author
+      content = self.last_msg.content
 
-    try: 
-        
-        api_response = api_instance.gifs_search_get(api_key, search, limit=5, rating='g')
-        lst = list(api_response.data)
-        giff = random.choice(lst)
-
-        emb = discord.Embed(title=search)
-        emb.set_image(url = f'https://media.giphy.com/media/{giff.id}/giphy.gif')
-
-        await ctx.message.delete()
-        await ctx.channel.reply(embed=emb)
-    except ApiException as e:
-        print("Exception when calling DefaultApi->gifs_search_get: %s\n" % e)
+      sembed = discord.Embed(title=f"Message from {author}", description=content)
+      await ctx.send(embed=sembed)
 
 
 def setup(client):
