@@ -29,16 +29,17 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 86400.0, commands.BucketType.user)
     async def daily(self,ctx):
+        wage=random.randint(0,1000)
         work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-        wager=work["woolongs"]+100
+        wager=work["woolongs"]+wage
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
-        await ctx.reply(f"Your work has been appreciated! You have been given 100 Woolongs for your work!")
+        await ctx.reply(f"Your work has been appreciated! You have been given {wage} Woolongs for your work!")
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
         if isinstance(error, commands.CommandOnCooldown):
             remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
-            await ctx.reply(f"Your work has already been appreciated! Please come again after "+str(remaining_time))
+            await ctx.reply(f"Chill out man, Come back a little later or you will be caught lacking! Please come again after "+str(remaining_time))
 
     @commands.command()
     async def trade(self,ctx,member:discord.Member,woolong:int):
@@ -78,9 +79,13 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.check(is_it_ON)
     async def sell(self,ctx):
+
         self.client.guildid = ctx.guild.id
+        
         self.client.uid = self.client.user.id 
+        
         self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] #['7⃣', '8⃣', '9⃣', '🔟']
+        
         rembed=discord.Embed(title="Woolong Roles",description="Sell Woolongs for a role",color=discord.Color.red())
         rembed.add_field(name=':one: Komi-sama Cult', value='50000 Woolongs', inline=True)
         rembed.add_field(name=':two: Marin-sama Cult', value='50000 Woolongs', inline=True)
@@ -89,212 +94,572 @@ class Economy(commands.Cog):
         rembed.add_field(name=':five: XKami Cult', value='50000 Woolongs', inline=True)
         rembed.add_field(name=':six: The Mute Pass', value='100000 Woolongs', inline=True)
         rembed.set_thumbnail(url=self.client.user.avatar_url)
+        
         self.client.msg=await ctx.send(embed=rembed)
         for reaction in self.client.reactions:
             await self.client.msg.add_reaction(reaction)
         self.client.reactid=self.client.msg.id
         print(self.client.reactid)
 
+
+    @commands.command()
+#    @commands.cooldown(1, 86400.0, commands.BucketType.user)
+    async def ship(self,ctx):
+
+        self.client.reply = random.randint(0,1)
+
+        self.client.numbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣']
+
+        shipembed = discord.Embed(title="Ship sale",description="Buy a ship to go to different place",color=discord.Color.red())
+        shipembed.add_field(name=':one: Venus', value='25000 Woolongs', inline=True)
+        shipembed.add_field(name=':two: Earth', value='15000 Woolongs', inline=True)
+        shipembed.add_field(name=':three: Mars', value='150000 Woolongs', inline=True)
+        shipembed.add_field(name=':four: Ganymede', value='25000 Woolongs', inline=True)
+        shipembed.add_field(name=':five: Jupiter', value='35000 Woolongs', inline=True)
+        shipembed.add_field(name=':six: Saturn', value='100000 Woolongs', inline=True)
+        shipembed.set_thumbnail(url=self.client.user.avatar_url)
+        
+        self.client.ship=await ctx.send(embed=shipembed)
+        
+        for sreaction in self.client.numbers:
+            await self.client.ship.add_reaction(sreaction)
+        self.client.rid=self.client.ship.id
+        print(self.client.rid)
+    
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         reactid = self.client.reactid
-        if payload.member.bot:
-            return
-        else:
+        raid = self.client.rid
+        if payload.message_id == reactid:
+            if payload.member.bot:
+                return
+            else:
 
-            ksc = discord.utils.get(payload.member.guild.roles, name='Komi-sama Cult')
-            msc = discord.utils.get(payload.member.guild.roles, name='Marin-sama Cult')
-            mc = discord.utils.get(payload.member.guild.roles, name='Monogatari Circlejerk')
-            bnc = discord.utils.get(payload.member.guild.roles, name='Bot Na Cult')
-            xc = discord.utils.get(payload.member.guild.roles, name='XKami Cult')
-            tmp = discord.utils.get(payload.member.guild.roles, name='The Mute Pass')            
-            
-            
-            if reactid == payload.message_id:
+                ksc = discord.utils.get(payload.member.guild.roles, name='Komi-sama Cult')
+                msc = discord.utils.get(payload.member.guild.roles, name='Marin-sama Cult')
+                mc = discord.utils.get(payload.member.guild.roles, name='Monogatari Circlejerk')
+                bnc = discord.utils.get(payload.member.guild.roles, name='Bot Na Cult')
+                xc = discord.utils.get(payload.member.guild.roles, name='XKami Cult')
+                tmp = discord.utils.get(payload.member.guild.roles, name='The Mute Pass')            
+
+
+                if reactid == payload.message_id:
+                    member=payload.member
+                    emoji=payload.emoji.name
+                    re=discord.Embed(description=f"Role assigned!",color=discord.Color.red())
+                    check=discord.Embed(description="Role is already available for the user!",color=discord.Color.red())
+                    broke=discord.Embed(description="You are broke!",color=discord.Color.red())
+
+                    #komi-sama cult
+                    if emoji == '1⃣':
+                        if ksc in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rksc=50000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprksc=buyer["woolongs"]
+                            if rksc>temprksc:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return
+                            else:
+                                buying=buyer["woolongs"]-rksc
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rksc
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(ksc)
+                                await self.client.msg.edit(embed=re)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+
+                    #marin-sama cult
+                    elif emoji == '2⃣':
+                        if msc in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rmsc=50000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprmsc=buyer["woolongs"]
+                            if rmsc>temprmsc:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return
+                            else:
+                                buying=buyer["woolongs"]-rmsc
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rmsc
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(msc)
+                                await self.client.msg.edit(embed=re)
+                                await self.client.msg.clear_reaction(emoji)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+
+                    #monogatari
+                    elif emoji == '3⃣': #'3⃣', '4⃣', '5⃣'
+                        if mc in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rmc=50000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprmc=buyer["woolongs"]
+                            if rmc>temprmc:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return           
+                            else:             
+                                buying=buyer["woolongs"]-rmc
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rmc
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(mc)
+                                await self.client.msg.edit(embed=re)
+                                await self.client.msg.clear_reaction(emoji)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+
+                    #bot na cult
+                    elif emoji == '4⃣':
+                        if bnc in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rbnc=50000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprbnc=buyer["woolongs"]
+                            if rbnc>temprbnc:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return      
+                            else:                  
+                                buying=buyer["woolongs"]-rbnc
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rbnc
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(bnc)
+                                await self.client.msg.edit(embed=re)
+                                await self.client.msg.clear_reaction(emoji)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+
+                    #xkami cult
+                    elif emoji == '5⃣':
+                        if xc in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rxc=50000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprxc=buyer["woolongs"]
+                            if rxc>temprxc:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return
+                            else:                        
+                                buying=buyer["woolongs"]-rxc
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rxc
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(xc)
+                                await self.client.msg.edit(embed=re)
+                                await self.client.msg.clear_reaction(emoji)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)                
+
+                    #mute pass
+                    else:   
+                        if tmp in member.roles:
+                            await self.client.msg.edit(embed=check)
+                            for reaction in self.client.reactions:
+                                await self.client.msg.clear_reaction(reaction)
+                        else:
+                            rtmp=100000
+                            buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            temprtmp=buyer["woolongs"]
+                            if rtmp>temprtmp:
+                                await self.client.msg.edit(embed=broke)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+                                return       
+                            else:                     
+                                buying=buyer["woolongs"]-rtmp
+
+                                seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                                selling=seller["woolongs"]+rtmp
+
+                                buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                                seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+
+                                await member.add_roles(tmp)
+                                await self.client.msg.edit(embed=re)
+                                await self.client.msg.clear_reaction(emoji)
+                                for reaction in self.client.reactions:
+                                    await self.client.msg.clear_reaction(reaction)
+
+        if payload.message_id == raid:
+            if payload.member.bot:
+                return
+            else:           
                 member=payload.member
                 emoji=payload.emoji.name
-                re=discord.Embed(description=f"Role assigned!",color=discord.Color.red())
-                check=discord.Embed(description="Role is already available for the user!",color=discord.Color.red())
                 broke=discord.Embed(description="You are broke!",color=discord.Color.red())
-                
-                #komi-sama cult
+                hunt=discord.Embed(description="Trying to capturing the bounty",color=discord.Color.red())
+                pay=discord.Embed(description="Delivering the bounty",color=discord.Color.red())                
+
+                #Venus
                 if emoji == '1⃣':
-                    if ksc in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                    rv=25000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprv=buyer["woolongs"]
+                    if rv>temprv:
+                        await self.client.ship(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        rksc=50000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        temprksc=buyer["woolongs"]
-                        if rksc>temprksc:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return
-                        else:
-                            buying=buyer["woolongs"]-rksc
+                        buying=buyer["woolongs"]-rv
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+rksc
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rv
 
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship(embed=prep)
 
-                            await member.add_roles(ksc)
-                            await self.client.msg.edit(embed=re)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                
-                #marin-sama cult
+                        await self.client.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                        
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
+                       
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rv
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(25000,30000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
+
+
+                #Earth
                 elif emoji == '2⃣':
-                    if msc in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                    rearth=15000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprearth=buyer["woolongs"]
+                    if rearth>temprearth:
+                        await self.client.ship.edit(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        msc=50000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        tempmsc=buyer["woolongs"]
-                        if msc>tempmsc:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return
-                        else:
-                            buying=buyer["woolongs"]-msc
+                        buying=buyer["woolongs"]-rearth
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+msc
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rearth
 
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})   
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship.edit(embed=prep)   
+                        await self.client.ship.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                  
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Earth",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
 
-                            await member.add_roles(msc)
-                            await self.client.msg.edit(embed=re)
-                            await self.client.msg.clear_reaction(emoji)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                
-                #monogatari
-                elif emoji == '3⃣': #'3⃣', '4⃣', '5⃣'
-                    if mc in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rearth
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(15000,20000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
+
+
+                #Mars
+                elif emoji == '3⃣':
+                    rm=150000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprm=buyer["woolongs"]
+                    if rm>temprm:
+                        await self.client.ship.edit(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        rmc=50000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        temprmc=buyer["woolongs"]
-                        if rmc>temprmc:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return           
-                        else:             
-                            buying=buyer["woolongs"]-rmc
+                        buying=buyer["woolongs"]-rm
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+rmc
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rm
 
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})      
 
-                            await member.add_roles(mc)
-                            await self.client.msg.edit(embed=re)
-                            await self.client.msg.clear_reaction(emoji)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                
-                #bot na cult
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship.edit(embed=prep)
+
+                        await self.client.ship.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                  
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Mars",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
+
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rm
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(150000,200000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
+
+                #Ganymede
                 elif emoji == '4⃣':
-                    if bnc in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                    rg=25000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprg=buyer["woolongs"]
+                    if rg>temprg:
+                        await self.client.ship.edit(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        rbnc=50000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        temprbnc=buyer["woolongs"]
-                        if rbnc>temprbnc:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return      
-                        else:                  
-                            buying=buyer["woolongs"]-rbnc
+                        buying=buyer["woolongs"]-rg
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+rbnc
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rg
 
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})      
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship.edit(embed=prep)                        
+                        
+                        await self.client.ship.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                  
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Ganymede",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
 
-                            await member.add_roles(bnc)
-                            await self.client.msg.edit(embed=re)
-                            await self.client.msg.clear_reaction(emoji)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                
-                #xkami cult
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rg
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(25000,30000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
+
+
+                #Jupiter
                 elif emoji == '5⃣':
-                    if xc in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                    rj=35000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprj=buyer["woolongs"]
+                    if rj>temprj:
+                        await self.client.ship.edit(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        rxc=50000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        temprxc=buyer["woolongs"]
-                        if rxc>temprxc:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return
-                        else:                        
-                            buying=buyer["woolongs"]-rxc
+                        buying=buyer["woolongs"]-rj
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+rxc
-    
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
-                            
-                            await member.add_roles(xc)
-                            await self.client.msg.edit(embed=re)
-                            await self.client.msg.clear_reaction(emoji)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)                
-                
-                #mute pass
-                else:   
-                    if tmp in member.roles:
-                        await self.client.msg.edit(embed=check)
-                        for reaction in self.client.reactions:
-                            await self.client.msg.clear_reaction(reaction)
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rj
+
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})      
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship.edit(embed=prep)                        
+                        
+                        await self.client.ship.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                  
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Jupiter",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
+
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rj
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(35000,40000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
+
+
+                #Saturn
+                else:
+                    rs=35000
+                    buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                    temprs=buyer["woolongs"]
+                    if rs>temprs:
+                        await self.client.ship.edit(embed=broke)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)
+                        return                        
                     else:
-                        rtmp=100000
-                        buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
-                        temprtmp=buyer["woolongs"]
-                        if rtmp>temprtmp:
-                            await self.client.msg.edit(embed=broke)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
-                            return       
-                        else:                     
-                            buying=buyer["woolongs"]-rtmp
-    
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
-                            selling=seller["woolongs"]+rtmp
-    
-                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})
-    
-                            await member.add_roles(tmp)
-                            await self.client.msg.edit(embed=re)
-                            await self.client.msg.clear_reaction(emoji)
-                            for reaction in self.client.reactions:
-                                await self.client.msg.clear_reaction(reaction)
+                        buying=buyer["woolongs"]-rs
+
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                        selling=seller["woolongs"]+rs
+
+                        buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":buying}})
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":selling}})      
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await self.client.ship.edit(embed=prep)                        
+                        
+                        await self.client.ship.clear_reaction(emoji)
+                        for sreaction in self.client.numbers:
+                            await self.client.ship.clear_reaction(sreaction)                  
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Saturn",color=discord.Color.red())
+                        await self.client.ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=hunt)
+                        await asyncio.sleep(0.5)
+                        await self.client.ship.edit(embed=pay)
+                        await asyncio.sleep(0.5)
+
+                        if self.client.reply == 0:
+                            failed=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tfailed=failed["woolongs"]
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed!",color=discord.Color.red())
+                            tf=tfailed+rs
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tf}})
+                            await self.client.ship.edit(embed=fail)
+                       
+                        if self.client.reply == 1:
+                            payment=random.randint(100000,110000)
+                            success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
+                            tsuccess=success["woolongs"]
+                            tp=tsuccess+payment
+                            paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+                            await self.client.ship.edit(embed=paid)
+                            buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
 
     @commands.command()
@@ -330,6 +695,13 @@ class Economy(commands.Cog):
         victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
 
         await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
+
+
+    @commands.command()
+    async def shop(self,ctx):
+        buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.author.guild.id})
+        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.author.guild.id})
+
 
 def setup(client):
   client.add_cog(Economy(client))
