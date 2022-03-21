@@ -38,7 +38,7 @@ class Economy(commands.Cog):
     async def on_command_error(self,ctx,error):
         if isinstance(error, commands.CommandOnCooldown):
             remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
-            await ctx.reply(f"Your work has already been appreciated! Please come again after "+str(remaining_time))
+            await ctx.reply(f"Chill out man, Come back a little later or you will be caught lacking! Please come again after "+str(remaining_time))
 
     @commands.command()
     async def trade(self,ctx,member:discord.Member,woolong:int):
