@@ -36,6 +36,13 @@ class Welcome(commands.Cog):
       guild = member.guild
       if guild.id == 414057277050585088:
         level=ranking.find_one({"id":member.id})
+        tempwoolongs=level["woolongs"]
+        spike=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+                               
+        left=spike["woolongs"]+tempwoolongs
+
+        spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":left}})        
+        
         ranking.delete_one(level)
         guild = member.guild
         left_channel = discord.utils.get(guild.text_channels, name="goodbye-👋🏽")
