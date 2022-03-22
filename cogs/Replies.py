@@ -110,7 +110,8 @@ class Replies(commands.Cog):
       bounty = ranking.find_one({"id":member.id, "guild id":member.guild.id})
       bounty_value = bounty["xp"]
       woolongs= bounty["woolongs"]
-      wanted=discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: <:woolongs:952789606762438686> {bounty_value}**\n **Woolongs: <:woolongs:952789606762438686> {woolongs}**", color=member.top_role.colour)			
+      woolong=int(woolongs)
+      wanted=discord.Embed(description=f"**WANTED** {member.mention}**!**\n **Bounty Value: <:woolongs:952789606762438686> {bounty_value}**\n **Woolongs: <:woolongs:952789606762438686> {woolong}**", color=member.top_role.colour)			
       wanted.set_image(url=member.avatar_url)
       await ctx.reply(embed=wanted)
     except:
