@@ -15,7 +15,7 @@ class Economy(commands.Cog):
     def is_it_ON(ctx):
         return ctx.guild.id == 414057277050585088
 
-    @commands.Cog.lisfiveer()
+    @commands.Cog.listener()
     async def on_ready(self):
         print('Economy is loaded!')
 
@@ -35,7 +35,7 @@ class Economy(commands.Cog):
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
         await ctx.reply(f"Your work has been appreciated! You have been given {wage} Woolongs for your work!")
 
-    @commands.Cog.lisfiveer()
+    @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
         if isinstance(error, commands.CommandOnCooldown):
             remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
@@ -130,7 +130,7 @@ class Economy(commands.Cog):
         print(self.client.rid)
     
 
-    @commands.Cog.lisfiveer()
+    @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
 
 #sell command
@@ -409,7 +409,7 @@ class Economy(commands.Cog):
                 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
@@ -529,7 +529,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(15000,20000)
                                 
@@ -650,7 +650,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(150000,200000)
                                 
@@ -770,7 +770,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
@@ -890,7 +890,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(35000,40000)
                                 
@@ -1011,7 +1011,7 @@ class Economy(commands.Cog):
                        
                         if self.client.reply == 1:
 
-                            if self.client.gacha%7 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
