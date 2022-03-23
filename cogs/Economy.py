@@ -61,7 +61,7 @@ class Economy(commands.Cog):
             message=await ctx.send("Beginning Bounty Transaction!")
             async with ctx.typing():
                 await asyncio.sleep(0.5)        
-            await message.edit(confivet=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
+            await message.edit(content=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
 
             sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
             reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
@@ -74,7 +74,7 @@ class Economy(commands.Cog):
 
             async with ctx.typing():
                 await asyncio.sleep(0.5)
-            await message.edit(confivet="Bounty Transaction successful!")
+            await message.edit(content="Bounty Transaction successful!")
 
     @commands.command()
     @commands.check(is_it_ON)
