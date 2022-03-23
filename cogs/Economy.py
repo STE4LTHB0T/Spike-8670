@@ -796,7 +796,7 @@ class Economy(commands.Cog):
                                 three=int(3*payment)
                                 tp=tsuccess+three
                                 
-                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
@@ -812,7 +812,7 @@ class Economy(commands.Cog):
                                 five=int(5*payment)
                                 tp=tsuccess+five
 
-                                paid=discord.Embed(description=f"Woah! You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
