@@ -1,14 +1,14 @@
 import discord
 from discord.ext import commands
 
-class Economy(commands.Cog):
+class Cog(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Economy is loaded!')
+        print('Cog is loaded!')
 
 def setup(client):
-  client.add_cog(Economy(client))
+  client.add_cog(Cog(client))
