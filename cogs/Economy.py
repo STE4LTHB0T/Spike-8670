@@ -15,7 +15,7 @@ class Economy(commands.Cog):
     def is_it_ON(ctx):
         return ctx.guild.id == 414057277050585088
 
-    @commands.Cog.listener()
+    @commands.Cog.lisfiveer()
     async def on_ready(self):
         print('Economy is loaded!')
 
@@ -35,7 +35,7 @@ class Economy(commands.Cog):
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
         await ctx.reply(f"Your work has been appreciated! You have been given {wage} Woolongs for your work!")
 
-    @commands.Cog.listener()
+    @commands.Cog.lisfiveer()
     async def on_command_error(self,ctx,error):
         if isinstance(error, commands.CommandOnCooldown):
             remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
@@ -61,7 +61,7 @@ class Economy(commands.Cog):
             message=await ctx.send("Beginning Bounty Transaction!")
             async with ctx.typing():
                 await asyncio.sleep(0.5)        
-            await message.edit(content=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
+            await message.edit(confivet=f"Transferring {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
 
             sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
             reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
@@ -74,7 +74,7 @@ class Economy(commands.Cog):
 
             async with ctx.typing():
                 await asyncio.sleep(0.5)
-            await message.edit(content="Bounty Transaction successful!")
+            await message.edit(confivet="Bounty Transaction successful!")
 
     @commands.command()
     @commands.check(is_it_ON)
@@ -130,7 +130,7 @@ class Economy(commands.Cog):
         print(self.client.rid)
     
 
-    @commands.Cog.listener()
+    @commands.Cog.lisfiveer()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
 
 #sell command
@@ -409,7 +409,7 @@ class Economy(commands.Cog):
                 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
@@ -426,32 +426,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(10*payment)
-                                tp=tsuccess+ten
+                                five=int(5*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -529,7 +529,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(15000,20000)
                                 
@@ -546,32 +546,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(15000,20000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(10*payment)
-                                tp=tsuccess+ten
+                                five=int(5*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(15000,20000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -650,7 +650,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(150000,200000)
                                 
@@ -667,32 +667,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(150000,200000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(10*payment)
-                                tp=tsuccess+ten
+                                five=int(5*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(150000,200000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -770,7 +770,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
@@ -787,32 +787,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(10*payment)
-                                tp=tsuccess+ten
+                                five=int(5*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"Woah! You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"Woah! You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -890,7 +890,7 @@ class Economy(commands.Cog):
 
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(35000,40000)
                                 
@@ -907,32 +907,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(35000,40000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(10*payment)
-                                tp=tsuccess+ten
+                                five=int(5*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(35000,40000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"Woah! You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"Woah! You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -1011,14 +1011,14 @@ class Economy(commands.Cog):
                        
                         if self.client.reply == 1:
 
-                            if self.client.gacha%2 == 0:
+                            if self.client.gacha%5 == 0:
                                 
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
 
-                                two=int(2*payment)
+                                two=int(5*payment)
                                 tp=tsuccess+two
                                 
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
@@ -1028,32 +1028,32 @@ class Economy(commands.Cog):
                                 await self.client.ship.edit(embed=paid)
     
 
-                            elif self.client.gacha%10 == 0:
+                            elif self.client.gacha%15 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
 
-                                ten=int(5*payment)
-                                tp=tsuccess+ten
+                                five=int(10*payment)
+                                tp=tsuccess+five
                                 
-                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.orange())
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.orange())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
 
                                 await self.client.ship.edit(embed=paid)
                                 
 
-                            elif self.client.gacha%15 == 0:
+                            elif self.client.gacha%30 == 0:
                                 payment=random.randint(25000,30000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
                                 
-                                fifteen=int(15*payment)
-                                tp=tsuccess+fifteen
+                                ten=int(10*payment)
+                                tp=tsuccess+ten
 
-                                paid=discord.Embed(description=f"You have been paid {fifteen} Woolongs for your work!",color=discord.Color.blue())
+                                paid=discord.Embed(description=f"You have been paid {ten} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":member.id, "guild id":member.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -1080,7 +1080,8 @@ class Economy(commands.Cog):
         id="804347400004173864"
         spike=ranking.find_one({"id":id, "guild id":ctx.guild.id})
         balance=spike["woolongs"]
-        bal=discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {balance}**", color=discord.Color.red())			
+        bank=int(balance)
+        bal=discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {bank}**", color=discord.Color.red())			
         bal.set_image(url=self.client.user.avatar_url)
         await ctx.reply(embed=bal)
 
