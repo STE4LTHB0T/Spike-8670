@@ -1,6 +1,7 @@
 import discord, os, asyncio, datetime, random
 from discord.ext import commands
 from pymongo import MongoClient
+from resources.Lists import *
 
 
 cluster = MongoClient(os.environ['MONGO'])
@@ -84,7 +85,7 @@ class Economy(commands.Cog):
         
         self.client.uid = self.client.user.id 
         
-        self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] #['7⃣', '8⃣', '9⃣', '🔟']
+        self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
         
         rembed=discord.Embed(title="Woolong Roles",description="Sell Woolongs for a role",color=discord.Color.red())
         rembed.add_field(name=':one: Komi-sama Cult', value='50000 Woolongs', inline=True)
@@ -92,7 +93,7 @@ class Economy(commands.Cog):
         rembed.add_field(name=':three: Monogatari Circlejerk', value='50000 Woolongs', inline=True)
         rembed.add_field(name=':four: Bot Na Cult', value='50000 Woolongs', inline=True)
         rembed.add_field(name=':five: XKami Cult', value='50000 Woolongs', inline=True)
-        rembed.add_field(name=':six: The Mute Pass', value='100000 Woolongs', inline=True)
+        rembed.add_field(name=':six: The Mute Pass', value='250000 Woolongs', inline=True)
         rembed.set_thumbnail(url=self.client.user.avatar_url)
         
         self.client.msg=await ctx.send(embed=rembed)
@@ -110,7 +111,7 @@ class Economy(commands.Cog):
         self.client.reply = random.randint(0,1)
         self.client.gacha = random.randint(0,500000)
 
-        self.client.numbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣']
+        self.client.numbers = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] #['7⃣', '8⃣', '9⃣', '🔟']
 
         shipembed = discord.Embed(title="Ship sale",description="Buy a ship to go to different place",color=discord.Color.red())
         shipembed.add_field(name=':one: Venus', value='25000 Woolongs', inline=True)
@@ -166,7 +167,7 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rksc=50000
+                            rksc=100000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprksc=buyer["woolongs"]
                             if rksc>temprksc:
@@ -195,7 +196,7 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rmsc=50000
+                            rmsc=100000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprmsc=buyer["woolongs"]
                             if rmsc>temprmsc:
@@ -219,13 +220,13 @@ class Economy(commands.Cog):
                                     await self.client.msg.clear_reaction(reaction)
 
                     #monogatari
-                    elif emoji == '3⃣': #'3⃣', '4⃣', '5⃣'
+                    elif emoji == '3⃣': 
                         if mc in member.roles:
                             await self.client.msg.edit(embed=check)
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rmc=50000
+                            rmc=100000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprmc=buyer["woolongs"]
                             if rmc>temprmc:
@@ -255,7 +256,7 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rbnc=50000
+                            rbnc=100000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprbnc=buyer["woolongs"]
                             if rbnc>temprbnc:
@@ -285,7 +286,7 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rxc=50000
+                            rxc=100000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprxc=buyer["woolongs"]
                             if rxc>temprxc:
@@ -307,7 +308,7 @@ class Economy(commands.Cog):
                                 await self.client.msg.clear_reaction(emoji)
                                 for reaction in self.client.reactions:
                                     await self.client.msg.clear_reaction(reaction)                
-
+                                        
                     #mute pass
                     else:   
                         if tmp in member.roles:
@@ -315,7 +316,7 @@ class Economy(commands.Cog):
                             for reaction in self.client.reactions:
                                 await self.client.msg.clear_reaction(reaction)
                         else:
-                            rtmp=100000
+                            rtmp=250000
                             buyer=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                             temprtmp=buyer["woolongs"]
                             if rtmp>temprtmp:
@@ -1085,6 +1086,59 @@ class Economy(commands.Cog):
         bal.set_image(url=self.client.user.avatar_url)
         await ctx.reply(embed=bal)
 
+    @commands.command()
+    @commands.cooldown(1, 43200.0, commands.BucketType.user)
+    async def arrest(self,ctx,member:discord.Member):
+        if member == self.client.user:
+            await ctx.reply("You can't arrest me!")
+            return
+        if member.id == 261143180387287040:
+            await ctx.reply("https://cdn.discordapp.com/attachments/849338245354749973/852853543606026290/6b5.jpg")
+            return
+        if member.id == ctx.author.id:
+            await ctx.reply("https://media.giphy.com/media/4MxLhxhOqCqYw/giphy.gif")
+            return
+        if member.id == 463780399437447200:
+            await ctx.reply("You can't arrest the bot owner, you idiot!")
+            await ctx.send("https://media.giphy.com/media/USNlL9p2fxY6Q/giphy.gif")
+            return
+        else:
+            g_arrest = random.randint(0,1)
+          
+            if g_arrest == 0:
+                await ctx.reply("The bounty escaped!")
+
+            else:
+                thief=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+                t_woolongs=thief["woolongs"]
+
+                thiefremove=int(0.05*t_woolongs)
+ 
+                r_woolongs = int(0.025*t_woolongs) #add money to bounty hunter
+
+                s_woolongs = int(0.025*t_woolongs) #add money to spike
+
+                tw = int(t_woolongs - thiefremove)
+
+                sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                bh=sender["woolongs"]
+
+                bounty_hunter = int(bh+r_woolongs)
+
+                sender=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":bounty_hunter}})
+
+                thief=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tw}})
+
+                spike=ranking.find_one({"id":"804347400004173864", "guild id":ctx.guild.id})
+                balance=spike["woolongs"]
+                bw=int(balance+s_woolongs)
+
+                spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":bw}})
+
+                arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!\n You got {s_woolongs} for the helping the ISSP!", color=member.top_role.colour) 
+                arrest.set_image(url=random.choice(arrest_reply))
+                await ctx.reply(embed=arrest)
+
 
     @commands.command()
     @commands.cooldown(1, 86400.0, commands.BucketType.user)
@@ -1093,22 +1147,37 @@ class Economy(commands.Cog):
             await ctx.send("Stealing from a bank! Calling the ISSP!")
             return
 
+        if member.id == 261143180387287040:
+            await ctx.reply("Stealing from the ISSP Head! Calling Security")
+            return
+
         if member.id==ctx.author.id:
-            await ctx.send("You can't trade with yourself!")
+            await ctx.reply("You can't trade with yourself!")
+            return
+
+        if member.id== 463780399437447200:
+            await ctx.send("You can't steal from the bot owner!")
             return
 
         thief=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         victim=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
 
+        vwoolongs=victim["woolongs"]
+
         remove=random.randint(0,1000)
 
-        profit=thief["woolongs"]+remove
-        loss=victim["woolongs"]-remove
+        if vwoolongs < remove:
+            await ctx.send("Stop stealing from a broke person!")
+        
+        else:
 
-        thief=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":profit}})
-        victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
+            profit=thief["woolongs"]+remove
+            loss=victim["woolongs"]-remove
 
-        await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
+            thief=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":profit}})
+            victim=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":loss}})
+
+            await ctx.send(f"{ctx.author.mention} stole {remove} from {member.mention}<:FeelsSmugMan:477783012172365864>")
 
 
     @commands.command()

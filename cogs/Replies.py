@@ -56,26 +56,6 @@ class Replies(commands.Cog):
       await asyncio.sleep(0.5)
     await ctx.send(content)  
   
-  @commands.command()
-  async def arrest(self,ctx,member:discord.Member):
-    if member == self.client.user:
-      await ctx.reply("You can't arrest me!")
-      return
-    if member.id == 261143180387287040:
-      await ctx.reply("https://cdn.discordapp.com/attachments/849338245354749973/852853543606026290/6b5.jpg")
-      return
-    if member.id == ctx.author.id:
-      await ctx.reply("https://media.giphy.com/media/4MxLhxhOqCqYw/giphy.gif")
-      return
-    if member.id == 463780399437447200:
-      await ctx.reply("You can't arrest the bot owner, you idiot!")
-      await ctx.send("https://media.giphy.com/media/USNlL9p2fxY6Q/giphy.gif")
-      return
-    else:
-      arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!", color=member.top_role.colour) 
-      arrest.set_image(url=random.choice(arrest_reply))
-      await ctx.reply(embed=arrest)
-  
   @commands.Cog.listener()
   async def on_message(self, message):
     if message.author == self.client.user:
