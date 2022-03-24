@@ -36,7 +36,7 @@ class Moderation(commands.Cog):
         guild = message.guild
         chat_logchannel= discord.utils.get(guild.text_channels, name="chat-logs")
         chatlog=discord.Embed(title="Chat Log")
-        chatlog.add_field(name="User:", value=f"{message.author.mention}")
+        chatlog.add_field(name="User", value=f"{message.author.mention}")
         chatlog.add_field(name="Channel", value=f"{message.channel.mention}")
         chatlog.add_field(name="Message",value=f"{message.content}")
         chatlog.set_thumbnail(url=message.author.avatar_url)
@@ -46,7 +46,6 @@ class Moderation(commands.Cog):
         pass
     
     @commands.command()
-    @commands.check(is_it_trustees)
     async def setup(self, ctx):
       mod = discord.Embed(title="Prepping the server for the bot.",color=discord.Color.red())
       mod.add_field(name="Welcome",value="To welcome new members, create a channel named `👋🏽︱welcome`",inline=False)
@@ -194,9 +193,9 @@ class Moderation(commands.Cog):
         muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
         if tm in ctx.author.roles:
             await member.add_roles(muted_role)
-            await ctx.send(f"{ctx.author.mention} muted {member.mention} using {tm.mention} because {reason}")
+            await ctx.reply(f"{ctx.author.mention} muted {member.mention} using {tm.mention} because {reason}")
         else:
-            await ctx.send("Try getting a pass!")
+            await ctx.reply("Try getting a pass!")
         await ctx.author.remove_roles(tm)    
 
     @commands.command()
@@ -256,7 +255,6 @@ class Moderation(commands.Cog):
             pass
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
     async def tempmutepass(self, ctx, member: discord.Member,
                        duration: DurationConverter):
         multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}
@@ -268,11 +266,11 @@ class Moderation(commands.Cog):
         if tm in ctx.author.roles:
             await member.add_roles(muted_role)
             await ctx.author.remove_roles(tm)
-            await ctx.send(f"{ctx.author.mention} muted {member.mention} using {tm.mention} for {amount}{unit}!")
+            await ctx.reply(f"{ctx.author.mention} muted {member.mention} using {tm.mention} for {amount}{unit}!")
             await asyncio.sleep(amount * multiplier[unit])
             await member.remove_roles(muted_role)
         else:
-            await ctx.send("Try getting a pass!")
+            await ctx.reply("Try getting a pass!")
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
@@ -310,14 +308,13 @@ class Moderation(commands.Cog):
             await log_channel.send(embed=utmute)
         except:
             pass
-        
+
     @tempmute.error
     async def tempmute_error(self, ctx, error):
         if isinstance(error, MissingPermissions):
             await ctx.reply(
-                "https://tenor.com/view/zoom-call-wfh-work-from-home-mute-gif-17949615"
-            )
-
-
+                "https://tenor.com/view/zoom-call-wfh-work-from-home-mute-gif-17949615")
+                
+                
 def setup(client):
     client.add_cog(Moderation(client))
