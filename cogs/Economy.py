@@ -85,7 +85,7 @@ class Economy(commands.Cog):
         
         self.client.uid = self.client.user.id 
         
-        self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
+        self.client.reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] # '7⃣', '8⃣', '9⃣']
         
         rembed=discord.Embed(title="Woolong Roles",description="Sell Woolongs for a role",color=discord.Color.red())
         rembed.add_field(name=':one: Komi-sama Cult', value='50000 Woolongs', inline=True)
