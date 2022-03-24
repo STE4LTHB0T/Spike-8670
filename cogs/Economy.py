@@ -1030,7 +1030,7 @@ class Economy(commands.Cog):
     
 
                             elif self.client.gacha%9 == 0:
-                                payment=random.randint(25000,30000)
+                                payment=random.randint(100000,150000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})                              
                                 tsuccess=success["woolongs"]
@@ -1046,7 +1046,7 @@ class Economy(commands.Cog):
                                 
 
                             elif self.client.gacha%11 == 0:
-                                payment=random.randint(25000,30000)
+                                payment=random.randint(100000,150000)
                                 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
@@ -1062,7 +1062,7 @@ class Economy(commands.Cog):
                                 
 
                             else:
-                                payment=random.randint(25000,30000)
+                                payment=random.randint(100000,150000)
 
                                 success=ranking.find_one({"id":member.id, "guild id":member.guild.id})
                                 tsuccess=success["woolongs"]
