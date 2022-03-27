@@ -13,7 +13,6 @@ class Replies(commands.Cog):
 
   def __init__(self, client):
     self.client = client	
-    self.last_msg = None
 
   @commands.Cog.listener()
   async def on_ready(self):
@@ -95,26 +94,10 @@ class Replies(commands.Cog):
       wanted.set_image(url=member.avatar_url)
       await ctx.reply(embed=wanted)
     except:
-      avatar=discord.Embed(description=f"**WANTED** {member.mention}**!", color=member.top_role.colour)
-      wanted.set_image(url=member.avatar_url)
+      avatar=discord.Embed(description=f"**WANTED** {member.mention}!", color=member.top_role.colour)
+      avatar.set_image(url=member.avatar_url)
       await ctx.reply(embed=avatar)
     
-    @commands.Cog.listener()
-    async def on_message_delete(self, message: discord.Message):
-      self.last_msg = message
-
-    @commands.command(name="snipe")
-    async def snipe(self, ctx: commands.Context):
-      if not self.last_msg:
-        await ctx.send("There is no message to snipe!")
-        return
-
-      author = self.last_msg.author
-      content = self.last_msg.content
-
-      sembed = discord.Embed(title=f"Message from {author}", description=content)
-      await ctx.send(embed=sembed)
-
 
 def setup(client):
   client.add_cog(Replies(client))
