@@ -15,7 +15,8 @@ class Embeds(commands.Cog):
   @commands.command()
   async def invite(self,ctx):
     invite=discord.Embed(title="Invite!",description="Owner: **STE4LTH_B0T#3622**",color=discord.Color.red())
-    invite.add_field(name="Invite Link",value="Click [here](https://discord.com/api/oauth2/authorize?client_id=804347400004173864&permissions=2352147526&scope=bot) to invite the bot to your server!",inline=True)
+    invite.add_field(name="Invite Link",value="Click [here](https://discord.com/api/oauth2/authorize?client_id=804347400004173864&permissions=2352147526&scope=bot) to invite the bot to your server!",inline=False)
+    invite.add_field(name="Github Repo",value="Click [here](https://github.com/STE4LTHB0T/Spike-8670) to visit the bot's repo!",inline=False)
     invite.set_thumbnail(url=self.client.user.avatar_url)
     await ctx.reply(embed=invite)
 
@@ -37,7 +38,7 @@ class Embeds(commands.Cog):
     data.add_field(name="Joined at", value= joined_time.strftime("%d/%m/%Y %H:%M IST"), inline=False)
     data.add_field(name="Nickname", value=member.nick, inline=False)
     data.set_thumbnail(url = member.avatar_url)
-    data.set_footer(icon_url = ctx.author.avatar_url, text = f"Requested by {ctx.author.name}#{ctx.author.discriminator}"	)
+    data.set_footer(icon_url = ctx.author.avatar_url, text = f"Requested by {ctx.author.name}#{ctx.author.discriminator}")
     await ctx.reply(embed=data)
 
   @commands.command()
