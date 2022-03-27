@@ -1,4 +1,4 @@
-import discord, random, os
+import discord, random, os, asyncio
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -62,11 +62,6 @@ class Test(commands.Cog):
     async def on_message(self, message):
         if message.channel.id == 495020983267229706:
             await message.publish()
-
-
-
-
-
 
 def setup(client):
   client.add_cog(Test(client))
