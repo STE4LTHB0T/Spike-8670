@@ -174,6 +174,18 @@ class Music(commands.Cog):
         await utils.guild_to_audiocontroller[current_guild].stop_player()
         await ctx.send("Stopped all sessions :octagonal_sign:")
 
+    @commands.command(name='remove', description=config.HELP_REMOVE_LONG, help=config.HELP_REMOVE_SHORT, aliases=['rm'])
+    async def _remove(self, ctx, *, queue_number: int):
+        current_guild = utils.get_guild(self.bot, ctx.message)
+
+        if queue_number is None:
+            ctx.send("You must enter a queue position to remove a song.")
+
+        audiocontroller = utils.guild_to_audiocontroller[current_guild]
+
+        response = audiocontroller.remove_song(queue_number)
+        await ctx.send("Removed!")
+
     @commands.command(name='move', description=config.HELP_MOVE_LONG, help=config.HELP_MOVE_SHORT, aliases=['mv'])
     async def _move(self, ctx, *args):
         if len(args) != 2:
