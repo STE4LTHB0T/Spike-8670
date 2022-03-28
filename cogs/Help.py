@@ -64,7 +64,7 @@ class Help(commands.Cog):
     mod2 = discord.Embed(title="Help - Moderation",description="Info about the Moderation System",color=discord.Color.red())
     mod2.add_field(name="Clear", value="`spike clear [Amount]` clears a number of messages in the Channel as asked for.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
     mod2.add_field(name="Kick", value="`spike kick [@User]` yeets the Citizen deemed unworthy of staying in the Planet.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
-    mod2.add_field(name="Mute/Unmute", value= "`spike mute [@User] [reason] / `spike unmute [@User]` strips/gives the right to speech of a Citizen in the Planet until further notice.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
+    mod2.add_field(name="Mute/Unmute", value= "`spike mute [@User] [reason] / spike unmute [@User]` strips/gives the right to speech of a Citizen in the Planet until further notice.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
     mod2.add_field(name="Nickname", value="`spike nickname [@User]` changes the nickname of a Citizen in the Planet.\n\nCitizens are warned that people up the heirarchy might play around with it, as long as shits and giggles, It will be tolerated. Citizens are asked to keep people who missuse the power maliciously in check!", inline=False)
     mod2.add_field(name="Temporary Mute", value="`spike tempmute [@User] [Time]` strips the right to speech of a Citizen in the Planet until the stipulated time mentioned strikes.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
     mod2.set_thumbnail(url=self.client.user.avatar_url)
@@ -166,13 +166,13 @@ class Help(commands.Cog):
 
   @help.command(aliases=["ban!"])
   async def ban(self, ctx):
-      ban = discord.Embed(title="Help - Ban",description="`spike ban [@User]` strikes the hammer on anyone the Mods deem exilable from the Planet.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
+      ban = discord.Embed(title="Help - Ban",description="`spike ban [@User] [Reason]` strikes the hammer on anyone the Mods deem exilable from the Planet.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
       ban.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=ban)
 
   @help.command(aliases=["caseregister!"])
   async def caseregister(self,ctx):
-      cr = discord.Embed(title="Help - Case Registration", description ="`spike caseregister [@User]/spike cr [@User]` registers a case on any Citizen and places a bounty on them", color=discord.Color.red())
+      cr = discord.Embed(title="Help - Case Registration", description ="`spike caseregister [@User] [Reason]/spike cr [@User] [Reason]` registers a case on any Citizen and places a bounty on them", color=discord.Color.red())
       cr.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=cr)
 
@@ -196,13 +196,13 @@ class Help(commands.Cog):
 
   @help.command(aliases=["kick!"])
   async def kick(self, ctx):
-      kick = discord.Embed(title="Help - Kick",description="`spike kick [@User]` yeets the Citizen deemed unworthy of staying in the Planet.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
+      kick = discord.Embed(title="Help - Kick",description="`spike kick [@User] [Reason]` yeets the Citizen deemed unworthy of staying in the Planet.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
       kick.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=kick)
 
   @help.command(aliases=["mute!"])
   async def mute(self, ctx):
-      mute = discord.Embed(title="Help - Mute",description="`spike mute [@User]` strips the right to speech of a Citizen in the Planet until further notice.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
+      mute = discord.Embed(title="Help - Mute",description="`spike mute [@User] [Reason] / spike unmute [@User]` strips the right to speech of a Citizen in the Planet until further notice.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!",color=discord.Color.red())
       mute.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=mute)
   
@@ -220,7 +220,7 @@ class Help(commands.Cog):
 
   @help.command(aliases=["music!"])
   async def music(self, ctx):
-      music = discord.Embed(title="Help - Music 🎵", description="Music commands (YouTube searches only)", color=discord.Color.red())
+      music = discord.Embed(title="Help - Music 🎵", description="Music commands", color=discord.Color.red())
       music.add_field(name="🔗Join",value="Joins the user's voice channel",inline=True)
       music.add_field(name="👋Leave",value="Leaves the voice channel",inline=True)
       music.add_field(name="🔁Loop",value="Loops the current song",inline=True)
