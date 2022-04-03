@@ -14,7 +14,7 @@ class Economy(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self._cd = commands.CooldownMapping.from_cooldown(1, 2.0, commands.BucketType.member)
+        self._cd = commands.CooldownMapping.from_cooldown(1, 43200.0, commands.BucketType.member)
 
     def get_ratelimit(self, ctx) -> typing.Optional[int]:
         bucket = self._cd.get_bucket(ctx)
@@ -496,6 +496,9 @@ class Economy(commands.Cog):
             reply = random.randint(0,1)
             gacha = random.randint(0,500000)
 
+            print(f'Reply:{reply}')
+            print(f'Gacha:{gacha}')
+
             reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'] #['7⃣', '8⃣', '9⃣', '🔟']
 
             shipembed = discord.Embed(title="Ship Rent",description="Rent a ship to go to different place",color=discord.Color.red())
@@ -533,20 +536,35 @@ class Economy(commands.Cog):
 
                 #Venus
                 if reaction.emoji == '1⃣':
+                    await ship.clear_reaction(reaction.emoji)
                     rv=25000
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
                     if rv>temprv:
                         await ship.edit(embed=broke, delete_after=5)
                         return                        
+                    
                     else:
-                        buying=buyer["woolongs"]-rv
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
 
                         seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rv
-
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
                         seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+
+                        print(f"Amount after selling for spike:{selling}")
+
                         
                         prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
                         
@@ -568,14 +586,17 @@ class Economy(commands.Cog):
                             
                             ptf=int(rv*0.7)
                             tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
                             seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
-                            sf=int(rv*0.3)
-                            stf=sfailed+sf
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
 
                             seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
@@ -596,6 +617,8 @@ class Economy(commands.Cog):
                                 two=int(2*payment)
                                 tp=tsuccess+two
                                 
+                                print(f"Amount after 2x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -611,6 +634,8 @@ class Economy(commands.Cog):
 
                                 three=int(3*payment)
                                 tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
@@ -628,6 +653,8 @@ class Economy(commands.Cog):
                                 five=int(5*payment)
                                 tp=tsuccess+five
 
+                                print(f"Amount after 5x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -642,6 +669,8 @@ class Economy(commands.Cog):
                                 tsuccess=success["woolongs"]
 
                                 tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
 
@@ -652,166 +681,67 @@ class Economy(commands.Cog):
 
                 #Earth
                 elif reaction.emoji == '2⃣':
-                    rearth=15000
+                    await ship.clear_reaction(reaction.emoji)
+                    rv=15000
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                    temprearth=buyer["woolongs"]
-                    if rearth>temprearth:
+                    temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
+                    if rv>temprv:
                         await ship.edit(embed=broke, delete_after=5)
                         return                        
+                    
                     else:
-                        buying=buyer["woolongs"]-rearth
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
 
                         seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                        selling=seller["woolongs"]+rearth
+                        selling=seller["woolongs"]+rv
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})   
+                        print(f"Amount after selling for spike:{selling}")
+
                         
-                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
-                        
-                        await ship.edit(embed=prep)   
-                        for reaction in reactions:
-                            await ship.clear_reaction(reaction)                  
-                        
-                        await asyncio.sleep(0.5)
-                        re=discord.Embed(description="Going to Earth",color=discord.Color.red())
-                        await ship.edit(embed=re)
-                        await asyncio.sleep(0.5)
-                        await ship.edit(embed=hunt)
-
-                        if reply == 0:
-                            failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                            tfailed=failed["woolongs"]
-                            
-                            ptf=int(rearth*0.7)
-                            tf=tfailed+ptf
-                            
-                            buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
-
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                            sfailed=seller["woolongs"]
-                            
-                            sf=int(rearth*0.3)
-                            stf=sfailed+sf
-
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
-
-                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
-
-                            await ship.edit(embed=fail, delete_after=5)
-
-
-                        if reply == 1:
-
-                            if gacha%5 == 0:
-                                
-                                payment=random.randint(15000,20000)
-                                
-                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                                tsuccess=success["woolongs"]
-
-                                two=int(2*payment)
-                                tp=tsuccess+two
-                                
-                                paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
-
-                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
-
-                                await ship.edit(embed=paid, delete_after=5)
-    
-
-                            elif gacha%9 == 0:
-                                payment=random.randint(15000,20000)
-                                
-                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})                              
-                                tsuccess=success["woolongs"]
-
-                                three=int(3*payment)
-                                tp=tsuccess+three
-                                
-                                paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
-
-                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
-
-                                await ship.edit(embed=paid, delete_after=5)
-                                
-
-                            elif gacha%11 == 0:
-                                payment=random.randint(15000,20000)
-                                
-                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                                tsuccess=success["woolongs"]
-                                
-                                five=int(5*payment)
-                                tp=tsuccess+five
-
-                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
-
-                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
-                                
-                                await ship.edit(embed=paid, delete_after=5)
-                                
-
-                            else:
-                                payment=random.randint(15000,20000)
-
-                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                                tsuccess=success["woolongs"]
-
-                                tp=tsuccess+payment
-                                
-                                paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
-
-                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})                            
-
-                                await ship.edit(embed=paid, delete_after=5)
-
-
-                #Mars
-                elif reaction.emoji == '3⃣':
-                    rm=150000
-                    buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                    temprm=buyer["woolongs"]
-                    if rm>temprm:
-                        await ship.edit(embed=broke, delete_after=5)
-                        return                        
-                    else:
-                        buying=buyer["woolongs"]-rm
-
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                        selling=seller["woolongs"]+rm
-
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})      
-
                         prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
                         
                         await ship.edit(embed=prep)
-
-                        
+          
                         for reaction in reactions:
-                            await ship.clear_reaction(reaction)                  
+                            await ship.clear_reaction(reaction)                        
                         
                         await asyncio.sleep(0.5)
-                        re=discord.Embed(description="Going to Mars",color=discord.Color.red())
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
                         await ship.edit(embed=re)
                         await asyncio.sleep(0.5)
                         await ship.edit(embed=hunt)
 
+                       
                         if reply == 0:
                             failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                             tfailed=failed["woolongs"]
                             
-                            ptf=int(rm*0.7)
+                            ptf=int(rv*0.7)
                             tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
                             seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
-                            sf=int(rm*0.3)
-                            stf=sfailed+sf
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
 
                             seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
@@ -819,12 +749,12 @@ class Economy(commands.Cog):
 
                             await ship.edit(embed=fail, delete_after=5)
 
-
+                
                         if reply == 1:
 
                             if gacha%5 == 0:
                                 
-                                payment=random.randint(150000,200000)
+                                payment=random.randint(15000,20000)
                                 
                                 success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                                 tsuccess=success["woolongs"]
@@ -832,6 +762,8 @@ class Economy(commands.Cog):
                                 two=int(2*payment)
                                 tp=tsuccess+two
                                 
+                                print(f"Amount after 2x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -840,13 +772,15 @@ class Economy(commands.Cog):
     
 
                             elif gacha%9 == 0:
-                                payment=random.randint(150000,200000)
+                                payment=random.randint(15000,20000)
                                 
                                 success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})                              
                                 tsuccess=success["woolongs"]
 
                                 three=int(3*payment)
                                 tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
@@ -856,13 +790,15 @@ class Economy(commands.Cog):
                                 
 
                             elif gacha%11 == 0:
-                                payment=random.randint(150000,200000)
+                                payment=random.randint(15000,20000)
                                 
                                 success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                                 tsuccess=success["woolongs"]
                                 
                                 five=int(5*payment)
                                 tp=tsuccess+five
+
+                                print(f"Amount after 5x for user:{tp}")
 
                                 paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
@@ -872,12 +808,14 @@ class Economy(commands.Cog):
                                 
 
                             else:
-                                payment=random.randint(150000,200000)
+                                payment=random.randint(15000,20000)
 
                                 success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                                 tsuccess=success["woolongs"]
 
                                 tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
 
@@ -885,50 +823,69 @@ class Economy(commands.Cog):
 
                                 await ship.edit(embed=paid, delete_after=5)
 
-                #Ganymede
-                elif reaction.emoji == '4⃣':
-                    rg=25000
+                #Mars
+                elif reaction.emoji == '3⃣':
+                    await ship.clear_reaction(reaction.emoji)
+                    rv=150000
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                    temprg=buyer["woolongs"]
-                    if rg>temprg:
+                    temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
+                    if rv>temprv:
                         await ship.edit(embed=broke, delete_after=5)
                         return                        
+                    
                     else:
-                        buying=buyer["woolongs"]-rg
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
 
                         seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                        selling=seller["woolongs"]+rg
+                        selling=seller["woolongs"]+rv
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})      
+                        print(f"Amount after selling for spike:{selling}")
+
                         
                         prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
                         
-                        await ship.edit(embed=prep)                        
-                        
+                        await ship.edit(embed=prep)
+          
                         for reaction in reactions:
-                            await ship.clear_reaction(reaction)                  
+                            await ship.clear_reaction(reaction)                        
                         
                         await asyncio.sleep(0.5)
-                        re=discord.Embed(description="Going to Ganymede",color=discord.Color.red())
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
                         await ship.edit(embed=re)
                         await asyncio.sleep(0.5)
                         await ship.edit(embed=hunt)
 
+                       
                         if reply == 0:
                             failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                             tfailed=failed["woolongs"]
                             
-                            ptf=int(rg*0.7)
+                            ptf=int(rv*0.7)
                             tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
                             seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
-                            sf=int(rg*0.3)
-                            stf=sfailed+sf
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
 
                             seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
@@ -936,7 +893,152 @@ class Economy(commands.Cog):
 
                             await ship.edit(embed=fail, delete_after=5)
 
+                
+                        if reply == 1:
 
+                            if gacha%5 == 0:
+                                
+                                payment=random.randint(150000,200000)
+                                
+                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                                tsuccess=success["woolongs"]
+
+                                two=int(2*payment)
+                                tp=tsuccess+two
+                                
+                                print(f"Amount after 2x for user:{tp}")
+
+                                paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
+
+                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
+
+                                await ship.edit(embed=paid, delete_after=5)
+    
+
+                            elif gacha%9 == 0:
+                                payment=random.randint(150000,200000)
+                                
+                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})                              
+                                tsuccess=success["woolongs"]
+
+                                three=int(3*payment)
+                                tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
+                                
+                                paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
+
+                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
+
+                                await ship.edit(embed=paid, delete_after=5)
+                                
+
+                            elif gacha%11 == 0:
+                                payment=random.randint(150000,200000)
+                                
+                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                                tsuccess=success["woolongs"]
+                                
+                                five=int(5*payment)
+                                tp=tsuccess+five
+
+                                print(f"Amount after 5x for user:{tp}")
+
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
+
+                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
+                                
+                                await ship.edit(embed=paid, delete_after=5)
+                                
+
+                            else:
+                                payment=random.randint(150000,200000)
+
+                                success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                                tsuccess=success["woolongs"]
+
+                                tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
+                                
+                                paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
+
+                                buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})                            
+
+                                await ship.edit(embed=paid, delete_after=5)
+
+
+                #Ganymede
+                elif reaction.emoji == '4⃣':
+                    await ship.clear_reaction(reaction.emoji)
+                    rv=25000
+                    buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                    temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
+                    if rv>temprv:
+                        await ship.edit(embed=broke, delete_after=5)
+                        return                        
+                    
+                    else:
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
+
+                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        selling=seller["woolongs"]+rv
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+
+                        print(f"Amount after selling for spike:{selling}")
+
+                        
+                        prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
+                        
+                        await ship.edit(embed=prep)
+          
+                        for reaction in reactions:
+                            await ship.clear_reaction(reaction)                        
+                        
+                        await asyncio.sleep(0.5)
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
+                        await ship.edit(embed=re)
+                        await asyncio.sleep(0.5)
+                        await ship.edit(embed=hunt)
+
+                       
+                        if reply == 0:
+                            failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                            tfailed=failed["woolongs"]
+                            
+                            ptf=int(rv*0.7)
+                            tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
+                            
+                            buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
+
+                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            sfailed=seller["woolongs"]
+                            
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
+
+                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+
+                            fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
+
+                            await ship.edit(embed=fail, delete_after=5)
+
+                
                         if reply == 1:
 
                             if gacha%5 == 0:
@@ -949,6 +1051,8 @@ class Economy(commands.Cog):
                                 two=int(2*payment)
                                 tp=tsuccess+two
                                 
+                                print(f"Amount after 2x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -964,6 +1068,8 @@ class Economy(commands.Cog):
 
                                 three=int(3*payment)
                                 tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
@@ -981,6 +1087,8 @@ class Economy(commands.Cog):
                                 five=int(5*payment)
                                 tp=tsuccess+five
 
+                                print(f"Amount after 5x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -995,6 +1103,8 @@ class Economy(commands.Cog):
                                 tsuccess=success["woolongs"]
 
                                 tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
 
@@ -1004,49 +1114,67 @@ class Economy(commands.Cog):
                                     
                 #Jupiter
                 elif reaction.emoji == '5⃣':
-                    rj=35000
+                    await ship.clear_reaction(reaction.emoji)
+                    rv=35000
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                    temprj=buyer["woolongs"]
-                    if rj>temprj:
+                    temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
+                    if rv>temprv:
                         await ship.edit(embed=broke, delete_after=5)
                         return                        
+                    
                     else:
-                        buying=buyer["woolongs"]-rj
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
 
                         seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                        selling=seller["woolongs"]+rj
+                        selling=seller["woolongs"]+rv
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})      
+                        print(f"Amount after selling for spike:{selling}")
+
                         
                         prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
                         
-                        await ship.edit(embed=prep)                        
-                        
-                        
+                        await ship.edit(embed=prep)
+          
                         for reaction in reactions:
-                            await ship.clear_reaction(reaction)                  
+                            await ship.clear_reaction(reaction)                        
                         
                         await asyncio.sleep(0.5)
-                        re=discord.Embed(description="Going to Jupiter",color=discord.Color.red())
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
                         await ship.edit(embed=re)
                         await asyncio.sleep(0.5)
                         await ship.edit(embed=hunt)
-                    
+
+                       
                         if reply == 0:
                             failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                             tfailed=failed["woolongs"]
                             
-                            ptf=int(rj*0.7)
+                            ptf=int(rv*0.7)
                             tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
                             seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
-                            sf=int(rj*0.3)
-                            stf=sfailed+sf
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
 
                             seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
@@ -1054,7 +1182,7 @@ class Economy(commands.Cog):
 
                             await ship.edit(embed=fail, delete_after=5)
 
-
+                
                         if reply == 1:
 
                             if gacha%5 == 0:
@@ -1067,6 +1195,8 @@ class Economy(commands.Cog):
                                 two=int(2*payment)
                                 tp=tsuccess+two
                                 
+                                print(f"Amount after 2x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -1082,6 +1212,8 @@ class Economy(commands.Cog):
 
                                 three=int(3*payment)
                                 tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
@@ -1099,7 +1231,9 @@ class Economy(commands.Cog):
                                 five=int(5*payment)
                                 tp=tsuccess+five
 
-                                paid=discord.Embed(description=f"Woah! You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
+                                print(f"Amount after 5x for user:{tp}")
+
+                                paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
                                 
@@ -1113,6 +1247,8 @@ class Economy(commands.Cog):
                                 tsuccess=success["woolongs"]
 
                                 tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
 
@@ -1123,49 +1259,67 @@ class Economy(commands.Cog):
 
                 #Saturn
                 else:
-                    rs=100000
+                    await ship.clear_reaction(reaction.emoji)
+                    rv=100000
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-                    temprs=buyer["woolongs"]
-                    if rs>temprs:
+                    temprv=buyer["woolongs"]
+
+                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    tempspike=seller["woolongs"]
+
+                    print(f"Current amount for user:{temprv}")
+                    print(f"Current amount for Spike:{tempspike}")
+                    
+                    
+                    if rv>temprv:
                         await ship.edit(embed=broke, delete_after=5)
                         return                        
+                    
                     else:
-                        buying=buyer["woolongs"]-rs
+                        buy=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
+                        buying=buy["woolongs"]-rv
+                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
+
+                        print(f"Amount after buying for user:{buying}")
 
                         seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
-                        selling=seller["woolongs"]+rs
+                        selling=seller["woolongs"]+rv
+                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
-                        buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})      
+                        print(f"Amount after selling for spike:{selling}")
+
                         
                         prep=discord.Embed(description="Prepping the ship for your work!",color=discord.Color.red())
                         
-                        await ship.edit(embed=prep)                        
-                        
-                        
+                        await ship.edit(embed=prep)
+          
                         for reaction in reactions:
-                            await ship.clear_reaction(reaction)                  
+                            await ship.clear_reaction(reaction)                        
                         
                         await asyncio.sleep(0.5)
-                        re=discord.Embed(description="Going to Saturn",color=discord.Color.red())
+                        re=discord.Embed(description="Going to Venus",color=discord.Color.red())
                         await ship.edit(embed=re)
                         await asyncio.sleep(0.5)
                         await ship.edit(embed=hunt)
-                        
+
+                       
                         if reply == 0:
                             failed=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                             tfailed=failed["woolongs"]
                             
-                            ptf=int(rs*0.7)
+                            ptf=int(rv*0.7)
                             tf=tfailed+ptf
+
+                            print(f"Amount after failed for user:{tf}")
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
                             seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
-                            sf=int(rs*0.3)
-                            stf=sfailed+sf
+                            stf=sfailed-ptf
+
+                            print(f"Amount after failed for spike:{stf}")
 
                             seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
@@ -1173,7 +1327,7 @@ class Economy(commands.Cog):
 
                             await ship.edit(embed=fail, delete_after=5)
 
-                       
+                
                         if reply == 1:
 
                             if gacha%5 == 0:
@@ -1183,9 +1337,11 @@ class Economy(commands.Cog):
                                 success=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                                 tsuccess=success["woolongs"]
 
-                                two=int(5*payment)
+                                two=int(2*payment)
                                 tp=tsuccess+two
                                 
+                                print(f"Amount after 2x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {two} Woolongs for your work!",color=discord.Color.green())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -1201,6 +1357,8 @@ class Economy(commands.Cog):
 
                                 three=int(3*payment)
                                 tp=tsuccess+three
+
+                                print(f"Amount after 3x for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {three} Woolongs for your work!",color=discord.Color.orange())
 
@@ -1218,6 +1376,8 @@ class Economy(commands.Cog):
                                 five=int(5*payment)
                                 tp=tsuccess+five
 
+                                print(f"Amount after 5x for user:{tp}")
+
                                 paid=discord.Embed(description=f"You have been paid {five} Woolongs for your work!",color=discord.Color.blue())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})
@@ -1232,12 +1392,15 @@ class Economy(commands.Cog):
                                 tsuccess=success["woolongs"]
 
                                 tp=tsuccess+payment
+
+                                print(f"Amount after bounty for user:{tp}")
                                 
                                 paid=discord.Embed(description=f"You have been paid {payment} Woolongs for your work!",color=discord.Color.red())
 
                                 buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tp}})                            
 
                                 await ship.edit(embed=paid, delete_after=5)
+                                
 
             except asyncio.TimeoutError:
                 pass
