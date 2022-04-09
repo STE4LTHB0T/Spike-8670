@@ -48,7 +48,7 @@ class Embeds(commands.Cog):
 
     records= discord.Embed(title=f"{ctx.guild.name} Server Information", colour=ctx.guild.owner.colour)
     records.set_thumbnail(url=ctx.guild.icon_url)
-    records.add_field(name="Intra-Solar System Police Head", value=ctx.guild.owner.mention, inline=False)
+    records.add_field(name="Inter-Solar System Police Head", value=ctx.guild.owner.mention, inline=False)
     records.add_field(name="Planet ID", value=ctx.guild.id, inline=False)
     records.add_field(name="Created at", value=guild_created_time.strftime("%d/%m/%Y %H:%M Post Gateway Accident"), inline=False)
     records.add_field(name="Bounty Roles", value=len(ctx.guild.roles), inline=False)
