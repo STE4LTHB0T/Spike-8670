@@ -26,7 +26,7 @@ class Mentions(commands.Cog):
           await message.channel.send("https://media.giphy.com/media/5gK1hvwoutPnG/giphy.gif")
           return
         
-        elif message.author.id == 261143180387287040:
+        elif message.author.id == message.guild.owner.id:
           await message.channel.send("big fan, saar<:FeelsHypeMan:477783011887153182>")
 
         else:

@@ -35,7 +35,7 @@ class Economy(commands.Cog):
                 print("Added {}".format(guild.name))
 
     @commands.command()
-    @commands.cooldown(1, 86400.0, commands.BucketType.user)
+    @commands.cooldown(1, 86400.0, commands.BucketType.member)
     async def daily(self,ctx):
         wage=random.randint(0,1000)
         work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
@@ -96,7 +96,7 @@ class Economy(commands.Cog):
         await ctx.reply(embed=bal)
 
     @commands.command()
-    @commands.cooldown(1, 43200.0, commands.BucketType.user)
+    @commands.cooldown(1, 43200.0, commands.BucketType.member)
     async def arrest(self,ctx,member:discord.Member):
         if member == self.client.user:
             await ctx.reply("You can't arrest me!")
@@ -150,7 +150,7 @@ class Economy(commands.Cog):
 
 
     @commands.command()
-    @commands.cooldown(1, 86400.0, commands.BucketType.user)
+    @commands.cooldown(1, 86400.0, commands.BucketType.member)
     async def steal(self,ctx,member:discord.Member):
         if member.id==self.client.user.id:
             await ctx.send("Stealing from a bank! Calling the ISSP!")
