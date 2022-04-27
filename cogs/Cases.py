@@ -6,7 +6,12 @@ cluster = MongoClient(os.environ['MONGO'])
 
 warnings = cluster["discord"]["warnings"]
 
+msg_channel = cluster["discord"]["channels"]
+
 class Cases(commands.Cog):
+
+    def __init__(self, client):
+      self.client = client
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -14,10 +19,7 @@ class Cases(commands.Cog):
 
     @commands.command(aliases=["casereg", "cr"])
     @commands.has_permissions(kick_members=True)
-    async def caseregister(self,ctx, member:discord.Member=None, *,reason=None):
-        guild=ctx.guild
-        log_channel = discord.utils.get(guild.text_channels, name="log-channel")    
-        
+    async def caseregister(self,ctx, member:discord.Member=None, *,reason=None):        
         if member is None:
             return await ctx.reply("Time to increase wanted level for somebody!<:MingoPepe:502444849442586644>")
 
@@ -31,7 +33,13 @@ class Cases(commands.Cog):
         warn.add_field(name="Reason",value=f"{reason}",inline=True)
         warn.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=warn)
-        await log_channel.send(embed=warn)
+        try:
+          case=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=case["channel id"]
+          casechannel = await self.client.fetch_channel(tempid)
+          await casechannel.send(embed=warn)
+        except Exception as e:
+          print(e)
 
     @commands.command()
     async def cases(self,ctx, member: discord.Member=None):

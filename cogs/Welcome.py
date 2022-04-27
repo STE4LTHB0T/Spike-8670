@@ -7,6 +7,8 @@ cluster = MongoClient(os.environ['MONGO'])
 
 ranking = cluster["discord"]["bounty"]
 
+msg_channel = cluster["discord"]["channels"]
+
 class Welcome(commands.Cog):
 
   def __init__(self, client):
@@ -16,44 +18,48 @@ class Welcome(commands.Cog):
   async def on_ready(self):
     print('Welcome is loaded!')
   
-  
   @commands.Cog.listener()
   async def on_member_join(self, member):
     await self.client.wait_until_ready()
     try:
       guild = member.guild
-      welcome_channel = discord.utils.get(guild.text_channels, name="👋🏽︱welcome")
-      await welcome_channel.send(f'Welcome to the **{guild.name}** Discord Server, {member.mention}!') 
+      welcome=msg_channel.find_one({"_id":"Welcome", "guild id":guild.id})
+      tempid=welcome["channel id"]
+      welcomechannel = await self.client.fetch_channel(tempid)
+  
+      await welcomechannel.send(f'Welcome to the **{guild.name}** Discord Server, {member.mention}!') 
+      
       if guild.id == 414057277050585088:
-        await welcome_channel.send(f"Introduce yourself at <#414057277050585090> and get yourself your favorite roles from <#772415743727370260>.")
-      await welcome_channel.send(random.choice(welcome_reply))
-    except:
-      pass
+        await welcomechannel.send(f"Introduce yourself at <#414057277050585090> and get yourself your favorite roles from <#772415743727370260>.")
+      
+      await welcomechannel.send(random.choice(welcome_reply))
+    except Exception as e:
+      print(e)
 
   @commands.Cog.listener()
   async def on_member_remove(self, member):
-    try:
       guild = member.guild
-      if guild.id == 414057277050585088:
-        level=ranking.find_one({"id":member.id})
-        tempwoolongs=level["woolongs"]
-        spike=ranking.find_one({"id": "804347400004173864", "guild id":member.guild.id})
+      
+      level=ranking.find_one({"id":member.id, "guild id":guild.id})
+      tempwoolongs=level["woolongs"]
+
+      spike=ranking.find_one({"id": "804347400004173864", "guild id":guild.id})
                                
-        left=spike["woolongs"]+tempwoolongs
+      left=spike["woolongs"]+tempwoolongs
 
-        spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":left}})        
+      spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":left}})        
         
-        ranking.delete_one(level)
-        guild = member.guild
-        left_channel = discord.utils.get(guild.text_channels, name="goodbye-👋🏽")
-        await left_channel.send(f'**{member}** just left the server.')
-      else:
-        guild = member.guild
-        left_channel = discord.utils.get(guild.text_channels, name="goodbye-👋🏽")
-        await left_channel.send(f'**{member}** just left the server.')
-    except:
-      pass
+      ranking.delete_one(level)
+      
+      try:
+        goodbye=msg_channel.find_one({"_id":"Goodbye", "guild id":guild.id})
+        tempid=goodbye["channel id"]
+        goodbyechannel = await self.client.fetch_channel(tempid)
 
+        await goodbyechannel.send(f'**{member}** just left the server.')
+      
+      except Exception as e:
+        print(e)
 
 def setup(client):
   client.add_cog(Welcome(client))

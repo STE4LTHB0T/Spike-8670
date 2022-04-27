@@ -1,9 +1,14 @@
-import discord, asyncio, random
+import discord, asyncio, random, os
 from cogs.Bounty import spam_channels
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
 from main import is_it_trustees
+from pymongo import MongoClient
 from resources.Lists import *
+
+cluster = MongoClient(os.environ['MONGO'])
+
+msg_channel = cluster["discord"]["channels"]
 
 class DurationConverter(commands.Converter):
     async def convert(self, ctx, argument):
@@ -32,27 +37,32 @@ class Moderation(commands.Cog):
         return
       if message.channel.id in spam_channels:
         return
+
       try:
-        guild = message.guild
-        chat_logchannel= discord.utils.get(guild.text_channels, name="chat-logs")
         chatlog=discord.Embed(title="Chat Log")
         chatlog.add_field(name="User", value=f"{message.author.mention}")
         chatlog.add_field(name="Channel", value=f"{message.channel.mention}")
         chatlog.add_field(name="Message",value=f"{message.content}")
         chatlog.set_thumbnail(url=message.author.avatar_url)
-        await chat_logchannel.send(embed=chatlog)
+        
+        chat=msg_channel.find_one({"_id":"Chatlog", "guild id":message.guild.id})
+        tempid=chat["channel id"]
+        chatchannel = await self.client.fetch_channel(tempid)
+        
+        await chatchannel.send(embed=chatlog)
 
-      except:
-        pass
+      except Exception as e:
+        print(e)
     
     @commands.command()
     async def setup(self, ctx):
       mod = discord.Embed(title="Prepping the server for the bot.",color=discord.Color.red())
-      mod.add_field(name="Welcome",value="To welcome new members, create a channel named `👋🏽︱welcome`",inline=False)
-      mod.add_field(name="Goodbye",value="To send off leaving members, create a channel named `goodbye-👋🏽`",inline=False)
-      mod.add_field(name="Log Channel",value="To log moderation, create a channel named `log-channel`",inline=False)
-      mod.add_field(name="Chat Logs", value="To log chats, create a channel named `chat-logs`")
-      mod.add_field(name="Ghost Pings",value="To detect and log ghost-pings, create a channel named `ghost-ping`",inline=False)
+      mod.add_field(name="Welcome",value="To welcome new members, do `spike welcome [Mention channel]`",inline=False)
+      mod.add_field(name="Goodbye",value="To send off leaving members, do `spike goodbye [Mention channel]`",inline=False)
+      mod.add_field(name="Log Channel",value="To log moderation, do `spike moderation [Mention channel]`",inline=False)
+      mod.add_field(name="Chat Logs", value="To log chats, do `spike chatlog [Mention channel]`",inline=False)
+      mod.add_field(name="Ghost Pings",value="To detect and log ghost-pings, do `spike ghostping [Mention channel]`",inline=False)
+      mod.add_field(name="Remove a channel",value="To remove a channel from the database, do `spike removechannel [Mention channel]`",inline=False)
       await ctx.reply(embed=mod)
 
 
@@ -91,11 +101,9 @@ class Moderation(commands.Cog):
                 "Time to yeet somebody!<:FeelsEvilMan:477783012428349441>")
         if member is ctx.author:
             return await ctx.reply("You can't kick yourself!")
-        guild = ctx.guild
-        log_channel = discord.utils.get(guild.text_channels,
-                                        name="log-channel")
+
         await member.send(
-            f"You've been kicked from the {guild.name} for the following reason: {reason}."
+            f"You've been kicked from the {ctx.guild.name} server for the following reason: {reason}."
         )
         await member.kick(reason=reason)
         kick = discord.Embed(title="Kicked!", color=ctx.author.color)
@@ -107,9 +115,12 @@ class Moderation(commands.Cog):
         kick.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=kick)
         try:
-            await log_channel.send(embed=kick)
-        except:
-            pass
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=kick)
+        except Exception as e:
+          print(e)
 
     @kick.error
     async def kick_error(self, ctx, error):
@@ -126,11 +137,9 @@ class Moderation(commands.Cog):
             )
         if member is ctx.author:
             return await ctx.reply("You can't ban yourself!")
-        guild = ctx.guild
-        log_channel = discord.utils.get(guild.text_channels,
-                                        name="log-channel")
+
         await member.send(
-            f"You've been banned from the {guild.name} for the following reason: {reason}."
+            f"You've been banned from the {ctx.guild.name} server for the following reason: {reason}."
         )
         await member.ban(reason=reason)
         ban = discord.Embed(title="Banned!", color=ctx.author.color)
@@ -142,9 +151,12 @@ class Moderation(commands.Cog):
         ban.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=ban)
         try:
-            await log_channel.send(embed=ban)
-        except:
-            pass
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=ban)
+        except Exception as e:
+          print(e)
 
     @ban.error
     async def ban_error(self, ctx, error):
@@ -209,8 +221,6 @@ class Moderation(commands.Cog):
             )
 
         guild = ctx.guild
-        log_channel = discord.utils.get(guild.text_channels,
-                                        name="log-channel")
         muted_role = discord.utils.get(guild.roles, name="Muted")
         await member.add_roles(muted_role)
         mute = discord.Embed(title="Muted!", color=ctx.author.color)
@@ -222,9 +232,12 @@ class Moderation(commands.Cog):
         mute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=mute)
         try:
-            await log_channel.send(embed=mute)
-        except:
-            pass
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=mute)
+        except Exception as e:
+          print(e)
 
     @mute.error
     async def mute_error(self, ctx, error):
@@ -238,8 +251,6 @@ class Moderation(commands.Cog):
     async def unmute(self, ctx, member: discord.Member):
 
         guild = ctx.guild
-        log_channel = discord.utils.get(guild.text_channels,
-                                        name="log-channel")
         muted_role = discord.utils.get(guild.roles, name="Muted")
         await member.remove_roles(muted_role)
         umute = discord.Embed(title="Unmuted!", color=ctx.author.color)
@@ -250,9 +261,12 @@ class Moderation(commands.Cog):
         umute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=umute)
         try:
-            await log_channel.send(embed=umute)
-        except:
-            pass
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=umute)
+        except Exception as e:
+          print(e)
 
     @commands.command()
     async def tempmutepass(self, ctx, member: discord.Member,
@@ -283,8 +297,6 @@ class Moderation(commands.Cog):
                 "Time for somebody to shut up!<:FeelsSpicyMan:915265533597855834>")        
 
         guild = ctx.guild
-        log_channel = discord.utils.get(guild.text_channels,
-                                        name="log-channel")
         muted_role = discord.utils.get(guild.roles, name="Muted")
         await member.add_roles(muted_role)
         tmute = discord.Embed(title="Temporary Mute!", color=ctx.author.color)
@@ -295,7 +307,13 @@ class Moderation(commands.Cog):
         tmute.add_field(name="Duration", value=f'{amount}{unit}', inline=True)
         tmute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=tmute)
-        await log_channel.send(embed=tmute)
+        try:
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=tmute)
+        except Exception as e:
+          print(e)
 
         await asyncio.sleep(amount * multiplier[unit])
         await member.remove_roles(muted_role)
@@ -305,9 +323,12 @@ class Moderation(commands.Cog):
             color=ctx.author.color)
         await ctx.reply(embed=utmute)
         try:
-            await log_channel.send(embed=utmute)
-        except:
-            pass
+          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          tempid=mod["channel id"]
+          modchannel = await self.client.fetch_channel(tempid)
+          await modchannel.send(embed=utmute)
+        except Exception as e:
+          print(e)
 
     @tempmute.error
     async def tempmute_error(self, ctx, error):

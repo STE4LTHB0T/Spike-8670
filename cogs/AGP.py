@@ -1,6 +1,11 @@
 import discord, json, os, datetime, logging
 from discord.ext import commands
 from pytz import timezone
+from pymongo import MongoClient
+
+cluster = MongoClient(os.environ['MONGO'])
+
+msg_channel = cluster["discord"]["channels"]
 
 class AGP(commands.Cog):
 
@@ -43,11 +48,12 @@ class AGP(commands.Cog):
     embed.set_footer(text=f"Detected At: {datetime.datetime.now().astimezone(timezone('Asia/Kolkata')).strftime('%d/%m/%Y %H:%M:%S IST')}")
     embed.set_thumbnail(url=message.author.avatar_url)
     try:
-      guild = message.guild
-      log_channel = discord.utils.get(guild.text_channels, name="ghost-ping")
-      await log_channel.send(embed=embed)
-    except:
-      pass
+      gp=msg_channel.find_one({"_id":"Ghost Ping", "guild id":message.guild.id})
+      tempid=gp["channel id"]
+      gpchannel = await self.client.fetch_channel(tempid)
+      await gpchannel.send(embed=embed)
+    except Exception as e:
+      print(e)
     return True
       
 def setup(client):
