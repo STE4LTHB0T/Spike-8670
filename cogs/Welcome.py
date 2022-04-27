@@ -23,7 +23,7 @@ class Welcome(commands.Cog):
     await self.client.wait_until_ready()
     try:
       guild = member.guild
-      welcome=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Welcome"})
+      welcome=msg_channel.find_one({"guild id":guild.id, "name":"Welcome"})
       tempid=welcome["channel id"]
       welcomechannel = await self.client.fetch_channel(tempid)
   
@@ -52,7 +52,7 @@ class Welcome(commands.Cog):
       ranking.delete_one(level)
       
       try:
-        goodbye=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Goodbye"})
+        goodbye=msg_channel.find_one({"guild id":guild.id, "name":"Goodbye"})
         tempid=goodbye["channel id"]
         goodbyechannel = await self.client.fetch_channel(tempid)
 
