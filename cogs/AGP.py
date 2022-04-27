@@ -48,7 +48,7 @@ class AGP(commands.Cog):
     embed.set_footer(text=f"Detected At: {datetime.datetime.now().astimezone(timezone('Asia/Kolkata')).strftime('%d/%m/%Y %H:%M:%S IST')}")
     embed.set_thumbnail(url=message.author.avatar_url)
     try:
-      gp=msg_channel.find_one({"_id":"Ghost Ping", "guild id":message.guild.id})
+      gp=msg_channel.find_one({"guild id":message.guild.id, "name":"Ghost Ping"})
       tempid=gp["channel id"]
       gpchannel = await self.client.fetch_channel(tempid)
       await gpchannel.send(embed=embed)

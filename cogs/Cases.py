@@ -34,7 +34,7 @@ class Cases(commands.Cog):
         warn.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=warn)
         try:
-          case=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          case=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=case["channel id"]
           casechannel = await self.client.fetch_channel(tempid)
           await casechannel.send(embed=warn)

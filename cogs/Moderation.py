@@ -45,7 +45,7 @@ class Moderation(commands.Cog):
         chatlog.add_field(name="Message",value=f"{message.content}")
         chatlog.set_thumbnail(url=message.author.avatar_url)
         
-        chat=msg_channel.find_one({"_id":"Chatlog", "guild id":message.guild.id})
+        chat=msg_channel.find_one({"guild id":message.guild.id, "name":"Chat Log"})
         tempid=chat["channel id"]
         chatchannel = await self.client.fetch_channel(tempid)
         
@@ -115,7 +115,7 @@ class Moderation(commands.Cog):
         kick.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=kick)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=kick)
@@ -151,7 +151,7 @@ class Moderation(commands.Cog):
         ban.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=ban)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=ban)
@@ -232,7 +232,7 @@ class Moderation(commands.Cog):
         mute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=mute)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=mute)
@@ -261,7 +261,7 @@ class Moderation(commands.Cog):
         umute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=umute)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=umute)
@@ -308,7 +308,7 @@ class Moderation(commands.Cog):
         tmute.set_thumbnail(url=member.avatar_url)
         await ctx.reply(embed=tmute)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=tmute)
@@ -323,7 +323,7 @@ class Moderation(commands.Cog):
             color=ctx.author.color)
         await ctx.reply(embed=utmute)
         try:
-          mod=msg_channel.find_one({"_id":"Moderation", "guild id":ctx.guild.id})
+          mod=msg_channel.find_one({"guild id":ctx.guild.id, "name":"Moderation"})
           tempid=mod["channel id"]
           modchannel = await self.client.fetch_channel(tempid)
           await modchannel.send(embed=utmute)
