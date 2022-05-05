@@ -14,7 +14,7 @@ class Help(commands.Cog):
   async def help(self,ctx):
     
     helper = discord.Embed(title="Help",description="Oh well. Whatever happens, happens.", color=discord.Color.red())
-    helper.add_field(name="Bot Owner",value="**STE4LTH_B0T#3622**",inline=False)
+    helper.add_field(name="Bot Owner",value="**[STE4LTH_B0T#3622](https://discordapp.com/users/463780399437447200)**",inline=False)
     helper.add_field(name="Bounty",value="`board`,`bounty`",inline=False)
     helper.add_field(name="Economy Commands",value="`arrest`, `give`, `sell`, `ship`",inline=False)
     helper.add_field(name="General Commands",value="`echo`, `google`, `invite`, `ping`, `poll`, `remind`",inline=False)

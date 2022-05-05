@@ -14,7 +14,7 @@ class Embeds(commands.Cog):
 
   @commands.command()
   async def invite(self,ctx):
-    invite=discord.Embed(title="Invite!",description="Owner: **STE4LTH_B0T#3622**",color=discord.Color.red())
+    invite=discord.Embed(title="Invite!",description="Owner: **[STE4LTH_B0T#3622](https://discordapp.com/users/463780399437447200)**",color=discord.Color.red())
     invite.add_field(name="Invite Link",value="Click [here](https://discord.com/api/oauth2/authorize?client_id=804347400004173864&permissions=2352147526&scope=bot) to invite the bot to your server!",inline=False)
     invite.add_field(name="Github Repo",value="Click [here](https://github.com/STE4LTHB0T/Spike-8670) to visit the bot's repo!",inline=False)
     invite.set_thumbnail(url=self.client.user.avatar_url)
