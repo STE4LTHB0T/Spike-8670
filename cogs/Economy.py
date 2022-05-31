@@ -37,7 +37,7 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 86400.0, commands.BucketType.member)
     async def daily(self,ctx):
-        wage=random.randint(0,1000)
+        wage=random.randint(500,1000)
         work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
         wager=work["woolongs"]+wage
         work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
@@ -96,7 +96,7 @@ class Economy(commands.Cog):
         await ctx.reply(embed=bal)
 
     @commands.command()
-    @commands.cooldown(1, 43200.0, commands.BucketType.member)
+    @commands.cooldown(1, 259200.0, commands.BucketType.member)
     async def arrest(self,ctx,member:discord.Member):
         if member == self.client.user:
             await ctx.reply("You can't arrest me!")
@@ -144,7 +144,7 @@ class Economy(commands.Cog):
 
                 spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":bw}})
 
-                arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!\n You got {s_woolongs} for the helping the ISSP!", color=member.top_role.colour) 
+                arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!\n You got {r_woolongs} for the helping the ISSP!", color=member.top_role.colour) 
                 arrest.set_image(url=random.choice(arrest_reply))
                 await ctx.reply(embed=arrest)
 
@@ -173,7 +173,7 @@ class Economy(commands.Cog):
 
         vwoolongs=victim["woolongs"]
 
-        remove=random.randint(0,1000)
+        remove=random.randint(500,1000)
 
         if vwoolongs < remove:
             await ctx.send("Stop stealing from a broke person!")
