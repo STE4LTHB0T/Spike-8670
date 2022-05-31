@@ -173,10 +173,10 @@ async def followers():
   await client.wait_until_ready()
   guild = client.get_guild(int(414057277050585088))
   Insta = Instaloader()
-  profile = Profile.from_username(Insta.context, 'otaku_nadu')
+  profile = Profile.from_username(Insta.context, 'otaku_nadu2.0')
   followcount = str(profile.followers)
   instagram_channel = guild.get_channel(int(840917916320923698))
-  await instagram_channel.edit(name=f'📷 Instagram: {followcount}')
+  await instagram_channel.edit(name=f'📷 Instagram: {followcount}') 
 
 
 music_extensions=['cogs.musicbot.commands.music','cogs.musicbot.commands.general']
