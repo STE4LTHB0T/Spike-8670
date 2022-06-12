@@ -3,6 +3,7 @@ from instaloader import Instaloader, Profile
 from discord.ext import commands,tasks
 from discord import Intents, Embed
 from resources.Lists import *
+from keep_alive import keep_alive
 from dotenv import load_dotenv
 load_dotenv('./*.env')
 
@@ -192,6 +193,9 @@ for extensions in music_extensions:
 
 
 followers.start()
+
+
+keep_alive()
 
 
 client.run(os.getenv('TOKEN'))
