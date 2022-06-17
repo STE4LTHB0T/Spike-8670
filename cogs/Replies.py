@@ -1,5 +1,5 @@
-import discord, time, datetime, asyncio, random, os
-from datetime import datetime
+import discord, time, datetime, asyncio, random, dateutil.parser, os
+from datetime import datetime, timedelta
 from discord.ext import commands
 from googlesearch import search
 from pymongo import MongoClient
@@ -43,7 +43,7 @@ class Replies(commands.Cog):
     embed.add_field(name="Album", value=spot.album,inline=True)
     m1, s1 = divmod(int(spot.duration.seconds), 60)
     spot_duration = f'{m1}:{s1}'
-    embed.add_field(name="Duration",value=spot_duration,inline=True)
+    embed.add_field(name="Duration",value=f"{dateutil.parser.parse(str(spot.duration)).strftime('%M:%S')}",inline=True)
     embed.add_field(name="Track Link", value=f"[{spot.title}](https://open.spotify.com/track/{spot.track_id})",inline=True)
     embed.set_thumbnail(url=spot.album_cover_url)
     await ctx.reply(embed=embed)
@@ -97,7 +97,6 @@ class Replies(commands.Cog):
       avatar=discord.Embed(description=f"**WANTED** {member.mention}!", color=member.top_role.colour)
       avatar.set_image(url=member.avatar_url)
       await ctx.reply(embed=avatar)
-    
 
 def setup(client):
   client.add_cog(Replies(client))
