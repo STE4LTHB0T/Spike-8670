@@ -1,10 +1,12 @@
-import discord, os
+import discord, datetime, time, platform, os
+from datetime import timedelta
 from instaloader import Instaloader, Profile
 from discord.ext import commands,tasks
 from discord import Intents, Embed
 from resources.Lists import *
 from dotenv import load_dotenv
 load_dotenv('./*.env')
+
 
 from config import config
 from cogs.musicbot.audiocontroller import AudioController
@@ -14,6 +16,9 @@ from cogs.musicbot.utils import guild_to_audiocontroller, guild_to_settings
 
 client = commands.Bot(case_insensitive=True, command_prefix=['spike ', 'Spike '], intents=discord.Intents.all())
 client.remove_command('help')
+
+
+start_time=time.time()
 
 
 @client.event
@@ -132,6 +137,31 @@ async def on_member_remove(member):
   await member_channel.edit(name=f'👥 Members: {len(list(filter(lambda m: not m.bot,guild.members)))}')
   await bot_channel.edit(name=f'🤖 Kaikoolis: {len(list(filter(lambda m: m.bot,guild.members)))}')
   await total_channel.edit(name=f'📈 Total: {guild.member_count}')
+
+
+@client.command()
+async def data(ctx):
+  pythonVersion = platform.python_version()
+  dpyVersion = discord.__version__
+  serverCount = len(client.guilds)
+  memberCount = len(set(client.get_all_members()))
+
+  current_time = time.time()
+  difference = int(round(current_time - start_time))
+  ut=difference
+  hours, remainder = divmod(ut,3600)
+  minutes, seconds = divmod(remainder,60)
+
+  data = discord.Embed(title="Spike#8670's Data", color=discord.Color.red())
+
+  data.add_field(name="Bot Version:", value="v2.2", inline=True)
+  data.add_field(name="Python Version:", value=pythonVersion, inline=True)
+  data.add_field(name="Discord.Py Version", value=dpyVersion, inline=True)
+  data.add_field(name="Total Guilds:", value=serverCount, inline=True)
+  data.add_field(name="Total Users:", value=memberCount, inline=True)
+  data.add_field(name="Uptime:", value='{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)), inline=True)
+  data.set_thumbnail(url=client.user.avatar_url)
+  await ctx.reply(embed=data)
 
 
 @client.event
