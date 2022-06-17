@@ -2,7 +2,7 @@ import discord, asyncio, random, os
 from cogs.Bounty import spam_channels
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
-from main import is_it_trustees
+from main import is_it_trustees, is_it_me
 from pymongo import MongoClient
 from resources.Lists import *
 
@@ -211,7 +211,7 @@ class Moderation(commands.Cog):
         await ctx.author.remove_roles(tm)    
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(kick_members=True)
     async def mute(self, ctx, member: discord.Member = None, *, reason=None):
         if member is None:
             await ctx.reply(
@@ -247,7 +247,7 @@ class Moderation(commands.Cog):
             )
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(kick_members=True)
     async def unmute(self, ctx, member: discord.Member):
 
         guild = ctx.guild
@@ -287,7 +287,7 @@ class Moderation(commands.Cog):
             await ctx.reply("Try getting a pass!")
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(kick_members=True)
     async def tempmute(self, ctx, member: discord.Member,
                        duration: DurationConverter):
         multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}
@@ -335,6 +335,22 @@ class Moderation(commands.Cog):
         if isinstance(error, MissingPermissions):
             await ctx.reply(
                 "https://tenor.com/view/zoom-call-wfh-work-from-home-mute-gif-17949615")
+
+    @commands.command()
+    @commands.check_any(commands.check(is_it_me), commands.has_permissions(administrator=True))
+    async def toggle(self, ctx, *, command):
+        command = self.client.get_command(command)
+
+        if command is None:
+            await ctx.send("Rule not found!")
+
+        elif ctx.command == command:
+            await ctx.send("You cannot disable this rule.")
+
+        else:
+            command.enabled = not command.enabled
+            status = "enabled" if command.enabled else "disabled"
+            await ctx.send(f"`{command.qualified_name}` has been {status}.")
                 
                 
 def setup(client):
