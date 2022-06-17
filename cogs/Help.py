@@ -18,9 +18,9 @@ class Help(commands.Cog):
     helper.add_field(name="Bounty",value="`board`,`bounty`",inline=False)
     helper.add_field(name="Economy Commands",value="`arrest`, `give`, `sell`, `ship`",inline=False)
     helper.add_field(name="General Commands",value="`echo`, `google`, `invite`, `ping`, `poll`, `remind`",inline=False)
-    helper.add_field(name="Moderation",value="`setup`, `ban`, `caseregister`, `cases`, `clear`, `deletecase`, `kick`, `mute`, `nickname`, `tempmute`",inline=False)
+    helper.add_field(name="Moderation",value="`setup`, `ban`, `caseregister`, `cases`, `clear`, `deletecase`, `kick`, `mute`, `nickname`, `tempmute`, `toggle`",inline=False)
     helper.add_field(name="Music and Radio",value="`music`, `radio`",inline=False)
-    helper.add_field(name="User-related Commands",value="`id`, `profiles`, `records`, `wanted`",inline=False)
+    helper.add_field(name="User-related Commands",value="`data`, `id`, `profiles`, `records`, `wanted`",inline=False)
     helper.set_thumbnail(url=self.client.user.avatar_url)
     helper.set_footer(icon_url = ctx.author.avatar_url, text = f"Requested by {ctx.author.name}#{ctx.author.discriminator}")
     
@@ -67,6 +67,7 @@ class Help(commands.Cog):
     mod2.add_field(name="Mute/Unmute", value= "`spike mute [@User] [reason] / spike unmute [@User]` strips/gives the right to speech of a Citizen in the Planet until further notice.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
     mod2.add_field(name="Nickname", value="`spike nickname [@User]` changes the nickname of a Citizen in the Planet.\n\nCitizens are warned that people up the heirarchy might play around with it, as long as shits and giggles, It will be tolerated. Citizens are asked to keep people who missuse the power maliciously in check!", inline=False)
     mod2.add_field(name="Temporary Mute", value="`spike tempmute [@User] [Time]` strips the right to speech of a Citizen in the Planet until the stipulated time mentioned strikes.\n\nWith great power comes great responsibility. Refrain from using it in uncalled for situations!", inline=False)
+    mod2.add_field(name="Toggle Commands", value="`spike toggle [command]` makes the planet immune to the rule imposed by the authority!\nRefrain it from misusing the power though!", inline=False)
     mod2.set_thumbnail(url=self.client.user.avatar_url)
     mod2.set_footer(icon_url = ctx.author.avatar_url, text = f"Requested by {ctx.author.name}#{ctx.author.discriminator}")
 
@@ -99,6 +100,7 @@ class Help(commands.Cog):
 
 
     user = discord.Embed(title="Help - User-related Commands", description="Info about User-related Commands", color=discord.Color.red())
+    user.add_field(name="Data", value="`spike data` provides the ruling authority's data.", inline=False)
     user.add_field(name="ID", value="`spike id` provides the Citizen's Citizenship status in the Planet and their details on when they joined the Solar System.", inline=False)
     user.add_field(name="Profile", value="`spike profiles [@User]` provides the mentioned Citizens' means of contacting them in other Solar Systems and Galaxies in the Universe.\n\nFor registering a profile, do `spike register [Client] [Username]`\n\nFor deregistering a profile, do `spike deregister [Client]`", inline=False)
     user.add_field(name="Records", value="`spike records` provides the key information pretaining to the Current Planet that the Citizens are living in.", inline=False)
@@ -181,6 +183,18 @@ class Help(commands.Cog):
       case = discord.Embed(title="Help - Cases", description ="`spike cases [@User]` pulls out the deck of cases on the Citizen", color=discord.Color.red())
       case.set_thumbnail(url=self.client.user.avatar_url)
       await ctx.reply(embed=case)
+
+  @help.command(aliases=["data!"])
+  async def data(self,ctx):
+      data = discord.Embed(title="Help - Data", description ="`spike data`provides the ruling authority's data.", color=discord.Color.red())
+      data.set_thumbnail(url=self.client.user.avatar_url)
+      await ctx.reply(embed=data)
+
+  @help.command(aliases=["toggle!"])
+  async def toggle(self,ctx):
+      toggle = discord.Embed(title="Help - Toggle Commands", description ="`spike toggle [command]` makes the planet immune to the rule imposed by the authority!\nRefrain it from misusing the power though!", color=discord.Color.red())
+      toggle.set_thumbnail(url=self.client.user.avatar_url)
+      await ctx.reply(embed=toggle)
 
   @help.command(aliases=["deletecase!"])
   async def deletecase(self,ctx):
