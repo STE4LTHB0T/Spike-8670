@@ -62,6 +62,7 @@ class Moderation(commands.Cog):
       mod.add_field(name="Log Channel",value="To log moderation, do `spike moderation [Mention channel]`",inline=False)
       mod.add_field(name="Chat Logs", value="To log chats, do `spike chatlog [Mention channel]`",inline=False)
       mod.add_field(name="Ghost Pings",value="To detect and log ghost-pings, do `spike ghostping [Mention channel]`",inline=False)
+      mod.add_field(name="Rank",value="To log ranks of a member, do `spike rank [Mention channel]`",inline=False)
       mod.add_field(name="Remove a channel",value="To remove a channel from the database, do `spike removechannel [Mention channel]`",inline=False)
       await ctx.reply(embed=mod)
 

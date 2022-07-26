@@ -72,6 +72,17 @@ class Channels(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
+    async def rank(self, ctx, channel:discord.TextChannel):
+        check = set_channel.find_one({"guild id":ctx.guild.id, "name":"Rank"})
+        if check is None:    
+            rank={"guild name":ctx.guild.name, "guild id":ctx.guild.id, "name":"Rank", "channel name":channel.name, "channel id":channel.id}
+            set_channel.insert_one(rank)
+            await ctx.reply(f"Rank Channel has been set to {channel.mention}!")
+        else:
+            await ctx.reply("Channel has already been set!")
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
     async def removechannel(self, ctx, channel:discord.TextChannel):
         remove={"guild id":ctx.guild.id, "channel id":channel.id}
         set_channel.delete_one(remove)

@@ -10,6 +10,8 @@ cluster = MongoClient(os.environ['MONGO'])
 ranking = cluster["discord"]["bounty"]
 spam_channels = [461661510520012800,435765743766863882,478568350080040970,479645984658292737,546632755476300045,775031354374225930,785081153949663242,479139129230360576,791954505678979072,773266465678950520,792260571130626058,802877502661197874,889155434051674132]
 
+msg_channel = cluster["discord"]["channels"]
+
 class Bounty(commands.Cog):
 	def __init__(self,client):
 		self.client = client
@@ -53,7 +55,14 @@ class Bounty(commands.Cog):
 							lvl +=1
 						xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 						if xp == 0:
-							await message.channel.send(f"**Attention! The level of {message.author.mention} has been raised to Level {lvl}!**")
+							try:
+								guild = message.author.guild
+								rank=msg_channel.find_one({"guild id":guild.id, "name":"Rank"})
+								tempid=rank["channel id"]
+								rankchannel = await self.client.fetch_channel(tempid)
+								await rankchannel.send(f'**Attention! The level of {message.author.name} has been raised to Level {lvl}!**')
+							except: 
+								await message.channel.send(f"**Attention! The level of {message.author.name} has been raised to Level {lvl}!**")
 							if message.guild.id == 414057277050585088:
 								for i in range(len(level)):
 									if lvl == levelnum[i]:
