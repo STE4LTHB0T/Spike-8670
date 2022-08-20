@@ -154,7 +154,7 @@ async def data(ctx):
 
   data = discord.Embed(title="Spike#8670's Data", color=discord.Color.red())
 
-  data.add_field(name="Bot Version:", value="v2.2", inline=True)
+  data.add_field(name="Bot Version:", value="v2.4", inline=True)
   data.add_field(name="Python Version:", value=pythonVersion, inline=True)
   data.add_field(name="Discord.Py Version", value=dpyVersion, inline=True)
   data.add_field(name="Total Guilds:", value=serverCount, inline=True)
