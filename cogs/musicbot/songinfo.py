@@ -23,7 +23,7 @@ class Song():
 
         def format_output(self, playtype):
 
-            embed = discord.Embed(title=playtype, description="[{}]({})".format(self.title, self.webpage_url), color=config.EMBED_COLOR)
+            embed = discord.Embed(title=playtype, description="[{}]({})".format(self.title, self.webpage_url), color=discord.Color.red())
 
             if self.thumbnail is not None:
                 embed.set_thumbnail(url=self.thumbnail)

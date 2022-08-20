@@ -1,11 +1,16 @@
 import asyncio
 
+import re
+import aiohttp
 import discord
 from config import config
 from discord.ext import commands
 from cogs.musicbot import linkutils, utils
 
+URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+LYRICS_URL = "https://some-random-api.ml/lyrics?title="
 
+  
 class Music(commands.Cog):
     """ A collection of the commands related to music playback.
 
@@ -294,6 +299,39 @@ class Music(commands.Cog):
         if song is None:
             return
         await ctx.send(embed=song.info.format_output(config.SONGINFO_SONGINFO))
+
+    @commands.command(name='lyrics',
+                      aliases=["ly"])
+    async def _lyrics(self, ctx):
+        current_guild = utils.get_guild(self.bot, ctx.message)
+
+        if await utils.play_check(ctx) == False:
+            return
+
+        if current_guild is None:
+            await ctx.send(config.NO_GUILD_MESSAGE)
+            return
+        song = utils.guild_to_audiocontroller[current_guild].current_song
+        st=song.info.title
+        print(st)
+        async with ctx.typing():
+            async with aiohttp.request("GET", LYRICS_URL + st, headers={}) as r:
+                if not 200 <= r.status <=299:
+                    await ctx.send("No lyrics found!")
+                
+                data = await r.json()
+
+                if len(data["lyrics"]) > 2000:
+                    return await ctx.send(f"<{data['links']['genius']}>")
+                embed = discord.Embed(
+                    title=data["title"],
+                    description=data["lyrics"],
+                    colour=discord.Color.red())
+                embed.set_thumbnail(url=data["thumbnail"]["genius"])
+                await ctx.send(embed=embed)
+
+        if song is None:
+            return
 
     @commands.command(name='history', description=config.HELP_HISTORY_LONG, help=config.HELP_HISTORY_SHORT)
     async def _history(self, ctx):

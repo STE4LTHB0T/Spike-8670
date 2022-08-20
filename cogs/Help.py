@@ -76,6 +76,7 @@ class Help(commands.Cog):
     music.add_field(name="🔗Join",value="Joins the user's voice channel",inline=True)
     music.add_field(name="👋Leave",value="Leaves the voice channel",inline=True)
     music.add_field(name="🔁Loop",value="Loops the current song",inline=True)
+    music.add_field(name="📝Lyrics", value="Shows the lyrics of the song if available", inline=True)
     music.add_field(name="🎤NP - Now Playing",value="Shows the current song that is playing",inline=True)
     music.add_field(name="⏸️Pause", value="Pauses the player", inline=True)
     music.add_field(name="⏯️Play",value="Plays the searched song",inline=True)
@@ -87,7 +88,6 @@ class Help(commands.Cog):
     music.add_field(name="🧞Summon",value="Joins the mentioned voice channel. Requires administrator permission",inline=True)
     music.add_field(name="❎Remove (song number)",value="Removes the song from the queue",inline=True)
     music.add_field(name="🗒️Queue", value="Shows the queue", inline=True)
-    music.add_field(name="🔊Volume", value="Sets the volume", inline=True)
     music.set_thumbnail(url=self.client.user.avatar_url)
     music.set_footer(icon_url = ctx.author.avatar_url, text = f"Requested by {ctx.author.name}#{ctx.author.discriminator}")
 
