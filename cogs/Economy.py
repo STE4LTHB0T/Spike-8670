@@ -1,14 +1,16 @@
-import discord, os, asyncio, datetime, random, typing
+import discord, os, asyncio, datetime, random, typing, logging
 from discord.ext import commands
 from pymongo import MongoClient
 from resources.Lists import *
 
-
-cluster = MongoClient(os.environ['MONGO'])
+cluster = MongoClient(os.environ["MONGO"])
 
 ranking = cluster["discord"]["bounty"]
 
 transport = cluster["discord"]["personalships"]
+
+handler = logging.FileHandler(filename = "discord.log", encoding = "utf-8", mode = "w")
+discord.utils.setup_logging(handler = handler)
 
 class Economy(commands.Cog):
 
@@ -20,96 +22,100 @@ class Economy(commands.Cog):
         bucket = self._cd.get_bucket(ctx)
         return bucket.update_rate_limit()        
 
-    def is_it_ON(ctx):
-        return ctx.guild.id == 414057277050585088
-
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Economy is loaded!')
+        print("Economy is loaded!")
 
         for guild in self.client.guilds:
-            spike=ranking.find_one({"id": "804347400004173864", "guild id": guild.id})
-            if spike is None:
-                new_guild={"name":"Spike","id": "804347400004173864", "guild id":guild.id, "guild name":guild.name, "woolongs":0}
+            bot_data = ranking.find_one({"id" : self.client.user.id, "guild id" : guild.id})
+            if bot_data is None:
+                new_guild={"name" : "self.client.user.name", "id" : "self.client.user.id", "guild id" : guild.id, "guild name" : guild.name, "woolongs" : 0}
                 ranking.insert_one(new_guild)
                 print("Added {}".format(guild.name))
 
     @commands.command()
+    async def test(self,ctx):
+        try:
+            await ctx.send(self.client.owner.id)
+        except Exception as e:
+            await ctx.send(e)
+
+    @commands.hybrid_command(name = "daily", with_app_command = True, description = "Gives your daily Woolongs")
     @commands.cooldown(1, 86400.0, commands.BucketType.member)
     async def daily(self,ctx):
-        wage=random.randint(500,1000)
-        work=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-        wager=work["woolongs"]+wage
-        work=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":wager}})
-        await ctx.reply(f"Your work has been appreciated! You have been given {wage} Woolongs for your work!")
+        wage = random.randint(500, 1000)
+        work = ranking.find_one({"id" : ctx.author.id, "guild id" : ctx.guild.id})
+        wager = work["woolongs"]+wage
+        work = ranking.update_one({"id" : ctx.author.id, "guild id" : ctx.guild.id}, {"$set" : {"woolongs" : wager}})
+        await ctx.reply(f"Your work has been appreciated! You have been given {wage} Woolongs for your work!", ephemeral = False)
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
         if isinstance(error, commands.CommandOnCooldown):
-            remaining_time = str(datetime.timedelta(seconds=int(error.retry_after)))
-            await ctx.reply(f"Chill out man, Come back a little later or you will be caught lacking! Please come again after "+str(remaining_time))
+            remaining_time = str(datetime.timedelta(seconds = int(error.retry_after)))
+            await ctx.reply(f"Chill out man, Come back a little later or you will be caught lacking! Please come again after "+str(remaining_time), ephemeral = False)
 
-    @commands.command()
-    async def give(self,ctx,member:discord.Member,woolong:int):
-        if member.id==ctx.author.id:
-            await ctx.send("You can't give Woolongs to yourself!")
+    @commands.hybrid_command(name = "give", with_app_command = True, description = "Gives a user the number of Woolongs you want to give")
+    async def give(self, ctx, member : discord.Member, woolong : int):
+        if member.id == ctx.author.id:
+            await ctx.reply("You can't give Woolongs to yourself!", ephemeral = False)
             return
-        if member==self.client.user:
-            await ctx.send("If you are feeling generous, I will take your entire bank balance!")
+        if member == self.client.user:
+            await ctx.reply("If you are feeling generous, I will take your entire bank balance!", ephemeral = False)
             return
 
-        sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-        temp=sender["woolongs"]
+        sender = ranking.find_one({"id" : ctx.author.id, "guild id" : ctx.guild.id})
+        temp = sender["woolongs"]
         if woolong>temp:
-            await ctx.send("You are broke!")
+            await ctx.reply("You are broke!", ephemeral = False)
             return
         else:
             async with ctx.typing():
                 await asyncio.sleep(0.5)
-            message=await ctx.send("Beginning Bounty Transaction!")
+            message = await ctx.reply("Beginning Bounty Transaction!", ephemeral = False)
             async with ctx.typing():
                 await asyncio.sleep(0.5)        
-            await message.edit(content=f"Giving {woolong} Woolongs to {member.mention} from {ctx.author.mention}")
+            await message.edit(content = f"Giving {woolong} Woolongs to {member.mention} from {ctx.author.mention}", ephemeral = False)
 
-            sender=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
-            reciever=ranking.find_one({"id":member.id, "guild id":ctx.guild.id})
+            sender = ranking.find_one({"id" : ctx.author.id, "guild id" : ctx.guild.id})
+            reciever = ranking.find_one({"id" : member.id, "guild id" : ctx.guild.id})
 
-            send=sender["woolongs"]-woolong
-            recieve=reciever["woolongs"]+woolong
+            send = sender["woolongs"]-woolong
+            recieve = reciever["woolongs"]+woolong
 
-            sender=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":send}})
-            reciever=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":recieve}})
+            sender = ranking.update_one({"id" : ctx.author.id, "guild id" : ctx.guild.id},{"$set" : {"woolongs" : send}})
+            reciever = ranking.update_one({"id" : member.id, "guild id" : ctx.guild.id},{"$set" : {"woolongs" : recieve}})
 
             async with ctx.typing():
                 await asyncio.sleep(0.5)
-            await message.edit(content="Transaction successful!")
+            await message.edit(content="Transaction successful!", ephemeral = False)
 
 
-    @commands.command()
-    async def bank(self,ctx):
-        id="804347400004173864"
-        spike=ranking.find_one({"id":id, "guild id":ctx.guild.id})
-        balance=spike["woolongs"]
-        bank=int(balance)
-        bal=discord.Embed(description=f"**Bank Of Solar System**\n **Woolongs: <:woolongs:952789606762438686> {bank}**", color=discord.Color.red())			
-        bal.set_image(url=self.client.user.avatar_url)
-        await ctx.reply(embed=bal)
+    @commands.hybrid_command(name = "bank", with_app_command = True, description = "Shows how much Woolongs the bank has")
+    async def bank(self, ctx):
+        id = "self.client.user.id"
+        spike = ranking.find_one({"id" : id, "guild id" : ctx.guild.id})
+        balance = spike["woolongs"]
+        banking = int(balance)
+        bal = discord.Embed(description = f"**Bank Of Solar System**\n **Woolongs : <:woolongs:952789606762438686> {banking}**", color = 0xff0000)			
+        bal.set_image(url = self.client.user.avatar.url)
+        await ctx.reply(embed = bal, ephemeral = False)
 
-    @commands.command()
+    @commands.hybrid_command(name = "arrest", with_app_command = True, description = "Tries to arrest a member of the planet")
     @commands.cooldown(1, 259200.0, commands.BucketType.member)
-    async def arrest(self,ctx,member:discord.Member):
+    async def arrest(self, ctx, member : discord.Member):
         if member == self.client.user:
-            await ctx.reply("You can't arrest me!")
+            await ctx.reply("You can't arrest me!", ephemeral = False)
             return
         if member.id == ctx.guild.owner.id:
-            await ctx.reply("https://cdn.discordapp.com/attachments/849338245354749973/852853543606026290/6b5.jpg")
+            await ctx.reply("https://cdn.discordapp.com/attachments/849338245354749973/852853543606026290/6b5.jpg", ephemeral = False)
             return
         if member.id == ctx.author.id:
-            await ctx.reply("https://media.giphy.com/media/4MxLhxhOqCqYw/giphy.gif")
+            await ctx.reply("https://media.giphy.com/media/4MxLhxhOqCqYw/giphy.gif", ephemeral = False)
             return
         if member.id == 463780399437447200:
             await ctx.reply("You can't arrest the bot owner, you idiot!")
-            await ctx.send("https://media.giphy.com/media/USNlL9p2fxY6Q/giphy.gif")
+            await ctx.send("https://media.giphy.com/media/USNlL9p2fxY6Q/giphy.gif", ephemeral = False)
             return
         else:
             g_arrest = random.randint(0,1)
@@ -138,11 +144,11 @@ class Economy(commands.Cog):
 
                 thief=ranking.update_one({"id":member.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tw}})
 
-                spike=ranking.find_one({"id":"804347400004173864", "guild id":ctx.guild.id})
+                spike=ranking.find_one({"id":"self.client.user.id", "guild id":ctx.guild.id})
                 balance=spike["woolongs"]
                 bw=int(balance+s_woolongs)
 
-                spike=ranking.update_one({"id": "804347400004173864", "guild id":member.guild.id},{"$set":{"woolongs":bw}})
+                spike=ranking.update_one({"id": "self.client.user.id", "guild id":member.guild.id},{"$set":{"woolongs":bw}})
 
                 arrest = discord.Embed(description= f"{ctx.author.mention} is trying to arrest {member.mention}!\n You got {r_woolongs} for the helping the ISSP!", color=member.top_role.colour) 
                 arrest.set_image(url=random.choice(arrest_reply))
@@ -192,7 +198,7 @@ class Economy(commands.Cog):
     #@commands.command()
     #async def shop(self,ctx):
         #buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.author.guild.id})
-        #seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.author.guild.id})
+        #seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.author.guild.id})
 
     @commands.command()
     async def brochure(self,ctx):
@@ -353,11 +359,11 @@ class Economy(commands.Cog):
                         else:
                             buying=buyer["woolongs"]-rksc
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rksc
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(ksc)
                             await msg.edit(embed=re, delete_after=5)
@@ -377,11 +383,11 @@ class Economy(commands.Cog):
                         else:
                             buying=buyer["woolongs"]-rmsc
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rmsc
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(msc)
                             await msg.edit(embed=re, delete_after=5)
@@ -401,11 +407,11 @@ class Economy(commands.Cog):
                         else:             
                             buying=buyer["woolongs"]-rmc
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rmc
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(mc)
                             await msg.edit(embed=re, delete_after=5)
@@ -425,11 +431,11 @@ class Economy(commands.Cog):
                         else:                  
                             buying=buyer["woolongs"]-rbnc
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rbnc
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(bnc)
                             await msg.edit(embed=re, delete_after=5)
@@ -449,11 +455,11 @@ class Economy(commands.Cog):
                         else:                        
                             buying=buyer["woolongs"]-rxc
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rxc
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(xc)
                             await msg.edit(embed=re, delete_after=5)                
@@ -473,11 +479,11 @@ class Economy(commands.Cog):
                         else:                     
                             buying=buyer["woolongs"]-rtmp
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             selling=seller["woolongs"]+rtmp
 
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":buying}})
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                             await ctx.author.add_roles(tmp)
                             await msg.edit(embed=re, delete_after=5)
@@ -541,7 +547,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprvenus=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprvenus}")
@@ -559,9 +565,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rvenus
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -591,14 +597,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -686,7 +692,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprearth=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprearth}")
@@ -704,9 +710,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rearth
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -736,14 +742,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -830,7 +836,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprmars=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprmars}")
@@ -848,9 +854,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rmars
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -880,14 +886,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -975,7 +981,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprganymede=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprganymede}")
@@ -993,9 +999,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rganymede
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -1025,14 +1031,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -1119,7 +1125,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprjupiter=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprjupiter}")
@@ -1137,9 +1143,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rjupiter
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -1169,14 +1175,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -1264,7 +1270,7 @@ class Economy(commands.Cog):
                     buyer=ranking.find_one({"id":ctx.author.id, "guild id":ctx.guild.id})
                     temprsaturn=buyer["woolongs"]
 
-                    seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                    seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                     tempspike=seller["woolongs"]
 
                     print(f"Current amount for user:{temprsaturn}")
@@ -1282,9 +1288,9 @@ class Economy(commands.Cog):
 
                         print(f"Amount after buying for user:{buying}")
 
-                        seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                        seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                         selling=seller["woolongs"]+rsaturn
-                        seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
+                        seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":selling}})
 
                         print(f"Amount after selling for spike:{selling}")
 
@@ -1314,14 +1320,14 @@ class Economy(commands.Cog):
                             
                             buyer=ranking.update_one({"id":ctx.author.id, "guild id":ctx.guild.id},{"$set":{"woolongs":tf}})
 
-                            seller=ranking.find_one({"id": "804347400004173864", "guild id":ctx.guild.id})
+                            seller=ranking.find_one({"id": "self.client.user.id", "guild id":ctx.guild.id})
                             sfailed=seller["woolongs"]
                             
                             stf=sfailed-ptf
 
                             print(f"Amount after failed for spike:{stf}")
 
-                            seller=ranking.update_one({"id": "804347400004173864", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
+                            seller=ranking.update_one({"id": "self.client.user.id", "guild id":ctx.guild.id},{"$set":{"woolongs":stf}})
 
                             fail=discord.Embed(description=f"Your work has been failed! You have been reimbursed {ptf} Woolongs!",color=discord.Color.red())
 
@@ -1406,5 +1412,5 @@ class Economy(commands.Cog):
                 pass
 
 
-def setup(client):
-  client.add_cog(Economy(client))
+async def setup(client):
+    await client.add_cog(Economy(client))

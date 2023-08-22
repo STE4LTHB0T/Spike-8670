@@ -1,7 +1,0 @@
-py-cord
-py-cord[voice]
-yt-dlp
-aiohttp
-asyncio
-beautifulsoup4
-spotipy
