@@ -1,4 +1,4 @@
-aiohttp==3.7.4.post0
+aiohttp==3.9.0
 aiofiles==0.7.0
 pymongo==3.12.0
 ffmpeg==1.4.0
