@@ -12,7 +12,7 @@ discord.py==1.7.2
 dnspython==2.6.1
 google==3.0.0
 giphy-client==1.0.0
-idna==2.10
+idna==3.7
 instaloader==4.8.1
 multidict==5.1.0
 psutil==5.8.0
