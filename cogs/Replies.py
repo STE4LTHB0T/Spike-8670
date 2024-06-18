@@ -1,4 +1,4 @@
-import discord, os, datetime, dateutil.parser, aiofiles, asyncio, logging
+import discord, os, datetime, dateutil.parser, aiofiles, asyncio, logging, random
 from discord.ext import commands
 from pymongo import MongoClient
 from googlesearch import search
